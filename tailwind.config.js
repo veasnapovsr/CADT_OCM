@@ -1,11 +1,12 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: [
-    './index.html',
-    './src/**/*.{vue,js,ts,jsx,tsx}'
-  ],
+export default {
+  content: ['./index.html', './src/**/*.{vue,js,ts}'],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        khmer: ['"KhmerMuol"', 'Noto Sans Khmer', 'sans-serif'],
+      },
+    },
   },
   plugins: [],
 }
