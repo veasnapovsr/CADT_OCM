@@ -7,44 +7,41 @@
         collapsed ? 'w-14' : 'w-64'
       ]"
     >
-      <!-- Header with bigger logo -->
+      <!-- Header -->
       <div
-        class="h-28 flex flex-col items-center justify-center border-b border-blue-800 text-white font-semibold select-none pt-6"
+        class="h-28 flex flex-col items-center justify-center
+               border-b border-blue-800 text-white font-semibold"
       >
-        <!-- Logo -->
         <img
           v-if="!collapsed"
           :src="logoimg"
+          class="h-16 mb-2"
           alt="Logo"
-          class="h-22 w-auto mb-4"
         />
-
-        <!-- Sidebar title -->
         <span v-if="!collapsed">ប្រព័ន្ធគ្រប់គ្រង</span>
-        <span v-else>≡</span>
+        <Menu v-else class="w-6 h-6" />
       </div>
 
       <!-- Menu -->
-      <nav class="flex-1 py-4">
-        <button
+      <nav class="flex-1 py-4 space-y-1">
+        <SidebarItem
           v-for="item in menuOptions"
           :key="item.key"
-          @click="handleSelect(item.key)"
-          class="w-full flex items-center px-4 py-2 text-sm transition relative overflow-hidden group"
-          :class="buttonClass(item.key)"
-        >
-          <!-- Icon -->
-          <span class="text-lg flex-shrink-0">{{ item.icon }}</span>
-
-          <!-- Text with pop/shift animation -->
-          <span
-            v-if="!collapsed"
-            class="truncate ml-2 transform transition-transform duration-150 ease-in-out group-hover:translate-x-1"
-          >
-            {{ item.label }}
-          </span>
-        </button>
+          :item="item"
+          :collapsed="collapsed"
+          :active="active === item.key"
+          @select="onSelect"
+        />
       </nav>
+
+      <!-- Collapse toggle -->
+      <button
+        class="h-12 flex items-center justify-center text-white
+               border-t border-blue-800 hover:bg-white/10"
+        @click="collapsed = !collapsed"
+      >
+        <Menu class="w-5 h-5" />
+      </button>
     </aside>
 
     <!-- Content -->
@@ -57,59 +54,34 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-
-// Import your logo
+import SidebarItem from './SidebarItem.vue'
 import logoimg from '../assets/logo.png'
+
+import {
+  Home,
+  CalendarCheck,
+  Briefcase,
+  Users,
+  FileText,
+  CalendarDays,
+  Menu
+} from 'lucide-vue-next'
 
 const router = useRouter()
 const collapsed = ref(false)
 const active = ref('dashboard')
 
-// Menu options
 const menuOptions = [
-  { label: 'ទំព័រដើម', key: 'dashboard', icon: '🏠', path: '/' },
-  { label: 'វត្តមាន', key: 'attendance', icon: '📅', path: '/attendance' },
-  { label: 'លេខទីស្តីការគណៈរដ្ឋមន្ត្រី', key: 'cabinet', icon: '💼', path: '/cabinet' },
-  { label: 'មន្ត្រីរាជការមុខងារសាធារណៈ', key: 'officials', icon: '👥', path: '/officials' },
-  { label: 'ឯកសារច្បាប់និងលិខិតបទដ្ឋាន', key: 'documents', icon: '📄', path: '/documents' },
-  { label: 'កិច្ចប្រជុំគណៈរដ្ឋមន្ត្រី', key: 'meetings', icon: '🗓️', path: '/meetings' },
-  { label: 'បិទបើកម៉ឺនុយ', key: 'toggle', icon: '☰', path: null }
+  { key: 'dashboard', label: 'ទំព័រដើម', icon: Home, path: '/' },
+  { key: 'attendance', label: 'វត្តមាន', icon: CalendarCheck, path: '/attendance' },
+  { key: 'cabinet', label: 'លេខទីស្តីការគណៈរដ្ឋមន្ត្រី', icon: Briefcase, path: '/cabinet' },
+  { key: 'officials', label: 'មន្ត្រីរាជការមុខងារសាធារណៈ', icon: Users, path: '/officials' },
+  { key: 'documents', label: 'ឯកសារច្បាប់និងលិខិតបទដ្ឋាន', icon: FileText, path: '/documents' },
+  { key: 'meetings', label: 'កិច្ចប្រជុំគណៈរដ្ឋមន្ត្រី', icon: CalendarDays, path: '/meetings' }
 ]
 
-// Handle menu clicks
-function handleSelect(key) {
-  if (key === 'toggle') {
-    collapsed.value = !collapsed.value
-    return
-  }
-
-  const item = menuOptions.find(i => i.key === key)
-  if (!item) return
-
-  active.value = key
+function onSelect(item) {
+  active.value = item.key
   if (item.path) router.push(item.path)
-}
-
-// Button classes
-function buttonClass(key) {
-  if (key === 'toggle') {
-    return `
-      text-white
-      hover:bg-white/10
-    `
-  }
-
-  if (active.value === key) {
-    return `
-      text-white
-      font-medium
-    `
-  }
-
-  return `
-    text-white
-    hover:bg-[#FFCD00]
-    hover:text-black
-  `
 }
 </script>

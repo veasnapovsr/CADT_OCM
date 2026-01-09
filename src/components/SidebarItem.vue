@@ -2,25 +2,47 @@
   <div class="w-full">
     <!-- Main button -->
     <button
-      class="w-full flex items-center justify-between gap-3 px-4 py-2 text-sm transition hover:bg-[#FFCD00]/20"
+      class="w-full flex items-center justify-between gap-3 px-4 py-2 text-sm transition
+             hover:bg-[#FFCD00]/20"
       :class="active ? 'text-black font-medium' : 'text-white'"
-      @click="toggleExpand"
+      @click="onClick"
     >
       <div class="flex items-center gap-3">
-        <span class="text-lg">{{ item.icon }}</span>
-        <span v-if="!collapsed" class="truncate group-hover:translate-x-1 transition-transform duration-150 ease-in-out">{{ item.label }}</span>
+        <!-- Icon -->
+        <component
+          :is="item.icon"
+          class="w-5 h-5 flex-shrink-0"
+        />
+
+        <!-- Label -->
+        <span v-if="!collapsed" class="truncate">
+          {{ item.label }}
+        </span>
       </div>
-      <span v-if="item.children && !collapsed" class="text-sm transition-transform" :class="expanded ? 'rotate-90' : ''">▶</span>
+
+      <!-- Arrow for submenu -->
+      <span
+        v-if="item.children && !collapsed"
+        class="text-xs transition-transform"
+        :class="expanded ? 'rotate-90' : ''"
+      >
+        ▶
+      </span>
     </button>
 
-    <!-- Expanded submenu -->
-    <div v-if="expanded && item.children && !collapsed" class="ml-8 flex flex-col">
+    <!-- Submenu -->
+    <div
+      v-if="expanded && item.children && !collapsed"
+      class="ml-8 flex flex-col"
+    >
       <button
         v-for="child in item.children"
         :key="child.key"
-        class="w-full flex items-center gap-2 px-4 py-1 text-sm text-gray-700 hover:bg-gray-100"
+        class="w-full px-4 py-1 text-sm text-gray-200
+               hover:bg-white/10 text-left"
+        @click.stop="$emit('select', child)"
       >
-        <span class="text-sm">{{ child.label }}</span>
+        {{ child.label }}
       </button>
     </div>
   </div>
@@ -29,17 +51,20 @@
 <script setup>
 import { ref } from 'vue'
 
-defineProps({
-  item: Object,
+const props = defineProps({
+  item: { type: Object, required: true },
   collapsed: Boolean,
   active: Boolean
 })
 
+const emit = defineEmits(['select'])
 const expanded = ref(false)
 
-function toggleExpand() {
-  if (item.children) {
+function onClick() {
+  if (props.item.children) {
     expanded.value = !expanded.value
+  } else {
+    emit('select', props.item)
   }
 }
 </script>
