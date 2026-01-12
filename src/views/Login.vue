@@ -1,212 +1,84 @@
 <template>
-  <div
-  class="relative min-h-screen flex items-center justify-center overflow-hidden"
-  style="background-color: #0128B8;"
->
-    <!-- Background image -->
-    <div
-  class="absolute inset-0"
-  :style="{
-    backgroundColor: '#0128B8',
-    backgroundImage: `url(${background})`,
-    backgroundRepeat: 'repeat',
-    backgroundSize: '240px 240px'
-  }"
-></div>
-    
-    <!-- Content -->
-    <div class="relative z-10 w-full max-w-md px-6 text-center text-white">
-      <!-- Logo -->
-      <div
-        class="flex justify-center mb-6
-               transition-all duration-[2000ms]
-               ease-[cubic-bezier(.16,1,.3,1)]"
-        :class="logoClass"
-      >
-        <img src="../assets/logo.png" alt="Logo" class="h-52" />
+  <div class="login login-action-login">
+    <div id="login">
+      <h1 role="presentation" class="wp-login-logo"><img src="../assets/logo_main.svg"></h1>
+      <h2 class="t-lspace bold">កម្មវិធីបរិវត្តកម្មឌីជីថលទីស្តីការគណៈរដ្ឋមន្ត្រី</h2>
+      <div class="input-wrapper">
+      <input id="user_login" class="input" v-model="email" type="text" autocomplete="off" placeholder="ឈ្មោះអ្នកប្រើប្រាស់" @keyup.enter="login" />
+      <div class="prefix"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor" aria-hidden="true" data-slot="icon" class="size-5 transition-colors duration-200"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"></path></svg></div>
       </div>
-
-      <!-- Login Form -->
-      <transition
-        enter-active-class="transition-all duration-[1200ms] ease-[cubic-bezier(.16,1,.3,1)]"
-        enter-from-class="opacity-0 translate-y-6"
-        enter-to-class="opacity-100 translate-y-0"
-      >
-        <div v-if="showForm">
-          <h1 class="text-xl font-khmer font-bold mb-8">
-            ប្រព័ន្ធកម្មវិធីទីស្តីការគណៈរដ្ឋមន្ត្រី
-          </h1>
-
-          <form class="space-y-5" @submit.prevent="login">
-            <!-- Email -->
-            <input
-              v-model.trim="email"
-              type="email"
-              placeholder="អ៊ីមែល"
-              class="w-full px-4 py-2 rounded
-                     bg-white/20 border border-white/30
-                     placeholder-white/70 text-white
-                     focus:outline-none focus:ring-2 focus:ring-yellow-300"
-            />
-
-            <!-- Password -->
-            <div class="relative">
-              <input
-                v-model="password"
-                :type="showPassword ? 'text' : 'password'"
-                placeholder="ពាក្យសម្ងាត់"
-                class="w-full px-4 py-2 pr-12 rounded
-                       bg-white/20 border border-white/30
-                       placeholder-white/70 text-white
-                       focus:outline-none focus:ring-2 focus:ring-yellow-300"
-              />
-
-              <!-- Show / Hide password -->
-              <button
-                type="button"
-                class="absolute inset-y-0 right-3 flex items-center
-                       text-white/60 hover:text-white transition"
-                @click="showPassword = !showPassword"
-              >
-                <!-- Eye -->
-                <svg
-                  v-if="!showPassword"
-                  class="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  viewBox="0 0 24 24"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M2.25 12c1.636-4.5 6.273-7.5 9.75-7.5s8.114 3 9.75 7.5
-                       c-1.636 4.5-6.273 7.5-9.75 7.5S3.886 16.5 2.25 12z" />
-                  <circle cx="12" cy="12" r="3.25" />
-                </svg>
-
-                <!-- Eye off -->
-                <svg
-                  v-else
-                  class="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  viewBox="0 0 24 24"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M3 3l18 18M10.73 5.073A9.72 9.72 0 0112 4.5
-                       c3.477 0 8.114 3 9.75 7.5
-                       a9.743 9.743 0 01-4.232 5.002
-                       M6.61 6.61A9.744 9.744 0 002.25 12
-                       c1.636 4.5 6.273 7.5 9.75 7.5
-                       a9.74 9.74 0 005.389-1.64" />
-                </svg>
-              </button>
-            </div>
-
-            <!-- Error -->
-            <p v-if="error" class="text-red-300 text-sm">
-              {{ error }}
-            </p>
-
-            <!-- Submit -->
-            <button
-              type="submit"
-              :disabled="loading"
-              class="w-40 py-2 mx-auto block rounded font-khmer
-                     bg-white/30 hover:bg-white/40
-                     transition disabled:opacity-50"
-            >
-              {{ loading ? "កំពុងចូល..." : "ចូលប្រព័ន្ធ" }}
-            </button>
-          </form>
-        </div>
-      </transition>
+      <div class="input-wrapper">
+      <input id="user_pass" class="input password-input" v-model="password" type="password" placeholder="លេខសំងាត់" @keyup.enter="login" />
+      <div class="prefix"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor" aria-hidden="true" data-slot="icon" class="size-5 transition-colors duration-200"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"></path></svg></div>
+      </div>
+      <p class="forgetmenot"><input name="rememberme" type="checkbox" id="rememberme" value="forever"  /> <label for="rememberme">ចងចាំគណនីខ្ញុំ</label></p>
+      <button id="wp-submit" class="button button-primary button-large" @click="login"><span class="form_i"><svg version="1.1" fill="currentColor" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" enable-background="new 0 0 512 512" xml:space="preserve" viewBox="48 48 416 416"><g><g><g><path d="M192,277.4h189.7l-43.6,44.7L368,352l96-96l-96-96l-31,29.9l44.7,44.7H192V277.4z"></path></g></g><g><path d="M255.7,421.3c-44.1,0-85.5-17.2-116.7-48.4c-31.2-31.2-48.3-72.7-48.3-116.9c0-44.1,17.2-85.7,48.3-116.9 			c31.2-31.2,72.6-48.4,116.7-48.4c44,0,85.3,17.1,116.5,48.2l30.3-30.3c-8.5-8.4-17.8-16.2-27.7-23.2C339.7,61,298.6,48,255.7,48 			C141.2,48,48,141.3,48,256s93.2,208,207.7,208c42.9,0,84-13,119-37.5c10-7,19.2-14.7,27.7-23.2l-30.2-30.2 			C341.1,404.2,299.7,421.3,255.7,421.3z"></path><rect x="447.4" y="255.4" transform="matrix(-0.7071 -0.7071 0.7071 -0.7071 583.767 753.7971)" width="1.2" height="1.2"></rect></g></g></svg></span>ចូលប្រព័ន្ធ</button>
+      <span v-if="error" type="error" class="error_msg">ឈ្មោះអ្នកប្រើ ឬពាក្យសម្ងាត់ខុស</span>  
     </div>
   </div>
+  <footer class="ocm_footer login_ac">រក្សាសិទ្ធិគ្រប់យ៉ាងដោយទីស្តីការគណៈរដ្ឋមន្ត្រី</footer>
 </template>
 
-<script setup>
-import { ref, computed, onMounted } from "vue";
-import { useRouter } from "vue-router";
-import axios from "axios";
+<script>
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+import { useRouter } from 'vue-router';
 
-import background from "../assets/pattern1.png";
-const router = useRouter();
+export default {
+  setup() {    
+    const email = ref('');
+    const password = ref('');
+    const error = ref('');
+    const router = useRouter();
 
-/* -------------------- State -------------------- */
-const email = ref("");
-const password = ref("");
-const showPassword = ref(false);
-const error = ref("");
-const loading = ref(false);
+    // Check if the user is already logged in
+    onMounted(() => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        router.push('/dashboard'); // Redirect to dashboard if token exists
+      }
+    });
 
-/* Animation */
-const logoVisible = ref(false);
-const logoCompact = ref(false);
-const showForm = ref(false);
-
-/* -------------------- Lifecycle -------------------- */
-onMounted(() => {
-  logoVisible.value = true;
-
-  setTimeout(() => {
-    logoCompact.value = true;
-    showForm.value = true;
-  }, 900);
-});
-
-/* -------------------- Computed -------------------- */
-const logoClass = computed(() => {
-  if (!logoVisible.value) return "opacity-0 scale-150";
-  if (!logoCompact.value) return "opacity-100 scale-150";
-  return "opacity-100 scale-95";
-});
-
-/* -------------------- Login -------------------- */
-const login = async () => {
-  error.value = "";
-
-  if (!email.value || !password.value) {
-    error.value = "សូមបញ្ចូលអ៊ីមែល និងពាក្យសម្ងាត់";
-    return;
-  }
-
-  // ✅ Allow ALL valid emails (gmail, gov.kh, edu.kh, etc.)
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email.value)) {
-    error.value = "សូមបញ្ចូលអ៊ីមែលត្រឹមត្រូវ";
-    return;
-  }
-
-  loading.value = true;
+    const login = async () => {
+      if (!email.value || !password.value) {
+        error.value = 'Email and password are required.';
+        return;
+      }      
 
   try {
-    const res = await axios.post(
-      "http://10.11.11.68:8001/api/authcenter/authentication/login",
-      {
-        email: email.value,
-        password: password.value,
-      },
-      { headers: { "Content-Type": "application/json" } }
-    );
+    const response = await axios.post('http://10.11.11.68:8001/api/authcenter/authentication/login', {
+      email: email.value,
+      password: password.value,
+    });
 
-    const { accessToken, user } = res.data;
+    // Assuming the token is in response.data.token
+    const token = response.data.token; // Get the token from the response
+    const record = response.data.record; // Get the token from the response
+    const userData = {
+      token: response.data.token,
+      // Add other user data if needed
+    };
 
-    localStorage.setItem("access_token", accessToken);
-    localStorage.setItem("user", JSON.stringify(user));
+    // Store the token in localStorage
+    localStorage.setItem('upload_max_filesize', response.data.upload_max_filesize); // Store the token as a string
+    localStorage.setItem('token', JSON.stringify(token));
+    localStorage.setItem('user', JSON.stringify(record));
+    // localStorage.setItem('token', token); // Store the token as a string
 
-    router.push("/dashboard");
+    console.log(response.data);
 
+    // Redirect to dashboard
+    router.push('/dashboard');
   } catch (err) {
-    if (err.response) {
-      error.value =
-        err.response.data?.message ||
-        "អ៊ីមែល ឬ ពាក្យសម្ងាត់ មិនត្រឹមត្រូវ";
+    if (err.response && err.response.data) {
+      error.value = err.response.data.message || 'Login failed. Please check your credentials.';
     } else {
-      error.value = "មិនអាចភ្ជាប់ទៅម៉ាស៊ីនមេបាន";
+      error.value = 'An error occurred. Please try again later.';
     }
-  } finally {
-    loading.value = false;
   }
+};
+
+    return { email, password, login, error };
+  },
 };
 </script>
