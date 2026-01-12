@@ -14,8 +14,6 @@
   }"
 ></div>
     
-   
-
     <!-- Content -->
     <div class="relative z-10 w-full max-w-md px-6 text-center text-white">
       <!-- Logo -->
@@ -36,7 +34,7 @@
       >
         <div v-if="showForm">
           <h1 class="text-xl font-khmer font-bold mb-8">
-            ប្រព័ន្ធគ្រប់គ្រងព័ត៌មានសាលា
+            ប្រព័ន្ធកម្មវិធីទីស្តីការគណៈរដ្ឋមន្ត្រី
           </h1>
 
           <form class="space-y-5" @submit.prevent="login">
