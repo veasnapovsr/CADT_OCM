@@ -1,16 +1,20 @@
 <template>
   <div
-    class="relative min-h-screen flex items-center justify-center
-           overflow-hidden bg-gradient-to-br from-indigo-900 via-blue-800 to-cyan-700"
-  >
+  class="relative min-h-screen flex items-center justify-center overflow-hidden"
+  style="background-color: #0128B8;"
+>
     <!-- Background image -->
     <div
-      class="absolute inset-0 bg-cover bg-center scale-105"
-      :style="{ backgroundImage: `url(${background})` }"
-    ></div>
-
-    <!-- Dark overlay -->
-    <div class="absolute inset-0 bg-black/45"></div>
+  class="absolute inset-0"
+  :style="{
+    backgroundColor: '#0128B8',
+    backgroundImage: `url(${background})`,
+    backgroundRepeat: 'repeat',
+    backgroundSize: '240px 240px'
+  }"
+></div>
+    
+   
 
     <!-- Content -->
     <div class="relative z-10 w-full max-w-md px-6 text-center text-white">
@@ -31,7 +35,7 @@
         enter-to-class="opacity-100 translate-y-0"
       >
         <div v-if="showForm">
-          <h1 class="text-xl font-semibold mb-8">
+          <h1 class="text-xl font-khmer font-bold mb-8">
             ប្រព័ន្ធគ្រប់គ្រងព័ត៌មានសាលា
           </h1>
 
@@ -110,7 +114,7 @@
             <button
               type="submit"
               :disabled="loading"
-              class="w-40 py-2 mx-auto block rounded font-semibold
+              class="w-40 py-2 mx-auto block rounded font-khmer
                      bg-white/30 hover:bg-white/40
                      transition disabled:opacity-50"
             >
@@ -128,8 +132,7 @@ import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 
-import background from "../assets/background.png";
-
+import background from "../assets/pattern1.png";
 const router = useRouter();
 
 /* -------------------- State -------------------- */
