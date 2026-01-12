@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import AuthLayout from '../layouts/AuthLayout.vue'
 import DashboardLayout from '../layouts/DashboardLayout.vue'
-import AppLayout from '../layouts/AppLayout.vue'
+import SidebarLayout from '../components/SidebarLayout.vue'
 
 import Login from '../views/Login.vue'
 import Dashboard from '../views/Dashboard.vue'
@@ -40,13 +40,14 @@ const router = createRouter({
     // 🧱 APP PAGES (WITH sidebar)
     {
       path: '/app',
-      component: AppLayout,
+      component: SidebarLayout,
       children: [
         {
           path: 'attendance',
           name: 'attendance',
           component: Attendance
         }
+        // future pages go here
       ]
     },
 

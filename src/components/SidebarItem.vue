@@ -2,16 +2,23 @@
   <div class="w-full">
     <!-- Main button -->
     <button
-      class="w-full flex items-center justify-between gap-3 px-4 py-2 text-sm transition
-             hover:bg-yellow/200"
-      :class="active ? 'text-black font-medium' : 'text-white'"
+      class="group w-full flex items-center justify-between gap-3 px-4 py-2 text-sm
+             transition-all duration-300 ease-out
+             hover:bg-yellow-200 hover:pl-5 hover:text-black"
+      :class="isActive
+        ? 'bg-yellow-400 text-black font-medium'
+        : 'text-white'"
       @click="onClick"
     >
       <div class="flex items-center gap-3">
         <!-- Icon -->
         <component
           :is="item.icon"
-          class="w-5 h-5 flex-shrink-0"
+          class="w-5 h-5 flex-shrink-0
+                 transition-colors duration-300"
+          :class="isActive
+            ? 'text-black'
+            : 'text-white group-hover:text-black'"
         />
 
         <!-- Label -->
@@ -20,11 +27,14 @@
         </span>
       </div>
 
-      <!-- Arrow for submenu -->
+      <!-- Arrow -->
       <span
         v-if="item.children && !collapsed"
-        class="text-xs transition-transform"
-        :class="expanded ? 'rotate-90' : ''"
+        class="text-xs transition-all duration-300"
+        :class="[
+          expanded ? 'rotate-90 text-black' : '',
+          !isActive && 'text-white group-hover:text-black'
+        ]"
       >
         ▶
       </span>
@@ -33,13 +43,14 @@
     <!-- Submenu -->
     <div
       v-if="expanded && item.children && !collapsed"
-      class="ml-8 flex flex-col"
+      class="ml-8 mt-1 flex flex-col space-y-1"
     >
       <button
         v-for="child in item.children"
         :key="child.key"
-        class="w-full px-4 py-1 text-sm text-gray-200
-               hover:bg-white/10 text-left"
+        class="group w-full px-4 py-1.5 text-sm text-gray-200 text-left
+               transition-all duration-300 ease-out
+               hover:bg-yellow-200 hover:text-black hover:pl-5"
         @click.stop="$emit('select', child)"
       >
         {{ child.label }}
@@ -49,7 +60,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 const props = defineProps({
   item: { type: Object, required: true },
@@ -59,6 +70,8 @@ const props = defineProps({
 
 const emit = defineEmits(['select'])
 const expanded = ref(false)
+
+const isActive = computed(() => props.active)
 
 function onClick() {
   if (props.item.children) {

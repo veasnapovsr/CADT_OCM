@@ -52,10 +52,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import SidebarItem from './SidebarItem.vue'
-import logoimg from '../assets/logo.png'
+import { ref, computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import SidebarItem from '@/components/SidebarItem.vue'
+import logoimg from '@/assets/logo.png'
 
 import {
   Home,
@@ -68,20 +68,63 @@ import {
 } from 'lucide-vue-next'
 
 const router = useRouter()
-const collapsed = ref(false)
-const active = ref('dashboard')
+const route = useRoute()
 
+const collapsed = ref(false)
+
+/**
+ * Sidebar menu (routes are SOURCE OF TRUTH)
+ */
 const menuOptions = [
-  { key: 'dashboard', label: 'ទំព័រដើម', icon: Home, path: '/' },
-  { key: 'attendance', label: 'វត្តមាន', icon: CalendarCheck, path: '/attendance' },
-  { key: 'cabinet', label: 'លេខទីស្តីការគណៈរដ្ឋមន្ត្រី', icon: Briefcase, path: '/cabinet' },
-  { key: 'officials', label: 'មន្ត្រីរាជការមុខងារសាធារណៈ', icon: Users, path: '/officials' },
-  { key: 'documents', label: 'ឯកសារច្បាប់និងលិខិតបទដ្ឋាន', icon: FileText, path: '/documents' },
-  { key: 'meetings', label: 'កិច្ចប្រជុំគណៈរដ្ឋមន្ត្រី', icon: CalendarDays, path: '/meetings' }
+  {
+    key: 'dashboard',
+    label: 'ទំព័រដើម',
+    icon: Home,
+    path: '/dashboard'
+  },
+  {
+    key: 'attendance',
+    label: 'វត្តមាន',
+    icon: CalendarCheck,
+    path: '/app/attendance'
+  },
+  {
+    key: 'cabinet',
+    label: 'លេខទីស្តីការគណៈរដ្ឋមន្ត្រី',
+    icon: Briefcase,
+    path: '/app/cabinet'
+  },
+  {
+    key: 'officials',
+    label: 'មន្ត្រីរាជការមុខងារសាធារណៈ',
+    icon: Users,
+    path: '/app/officials'
+  },
+  {
+    key: 'documents',
+    label: 'ឯកសារច្បាប់និងលិខិតបទដ្ឋាន',
+    icon: FileText,
+    path: '/app/documents'
+  },
+  {
+    key: 'meetings',
+    label: 'កិច្ចប្រជុំគណៈរដ្ឋមន្ត្រី',
+    icon: CalendarDays,
+    path: '/app/meetings'
+  }
 ]
 
+/**
+ * Active menu derived from current route
+ */
+const active = computed(() => {
+  const match = menuOptions.find(item =>
+    route.path.startsWith(item.path)
+  )
+  return match?.key
+})
+
 function onSelect(item) {
-  active.value = item.key
-  if (item.path) router.push(item.path)
+  router.push(item.path)
 }
 </script>
