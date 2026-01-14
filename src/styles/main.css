@@ -2032,6 +2032,8 @@ body:not(.ocm_dark_skin) .ocm_bfw .ocm_caw:hover .ocm_icard{
   text-overflow: ellipsis;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 /* ocm grid */
 .ocmopt-col{
