@@ -5,6 +5,13 @@ export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
+export const createSelectOptions = (labels) => {
+        if (!Array.isArray(labels)) return [];
+        return labels
+                .filter((label) => typeof label === "string" && label.trim() !== "")
+                .map((label) => ({ label, value: label }));
+};
+
 export const API_BASE_URL = "http://localhost/content_egg/wp-json/api";
 
 export const checkWaitingStatus = async () => {
@@ -45,3 +52,5 @@ export const formatDateKhmer = (dateString) => {
 
     return `${day} ${month} ${year}`;
 };
+
+
