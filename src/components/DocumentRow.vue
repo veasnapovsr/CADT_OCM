@@ -1,20 +1,21 @@
 <template>
   <tr>
     <!-- INDEX -->
-    <td>{{ index + 1 }}</td>
+    <td>{{ formatKhmerNumber(index + 1) }}</td>
 
     <!-- DOCUMENT INFO -->
     <td>
       <span class="jl_tbl_w">
         <span class="ocm_docfw">
           <span class="ocm_docf d-flex flex-column align-items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="4 2 16 20"><g fill="none"><path d="M12 8V2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10h-6a2 2 0 0 1-2-2zm-5 4.25a.75.75 0 1 1 1.5 0a.75.75 0 0 1-1.5 0zm0 3a.75.75 0 1 1 1.5 0a.75.75 0 0 1-1.5 0zm0 3a.75.75 0 1 1 1.5 0a.75.75 0 0 1-1.5 0zm3-6a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5a.75.75 0 0 1-.75-.75zm0 3a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5a.75.75 0 0 1-.75-.75zm0 3a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5a.75.75 0 0 1-.75-.75zM13.5 8V2.5l6 6H14a.5.5 0 0 1-.5-.5z" fill="currentColor"></path></g></svg>
             PDF
           </span>
           {{ doc.size }}
         </span>
 
         <span class="jl_tbl_c">
-          <span class="tb_n1 bold ellip-2"
+          <span class="tb_n1 link bold ellip-2"
               :title="doc.title">
             {{ doc.title }}
           </span>
@@ -39,15 +40,14 @@
 
     <!-- DATE -->
     <td>
-      {{ doc.date }}
+      {{ formatDateKhmer(doc.date) }}
     </td>
 
     <!-- SENT TO + TIME AGO -->
     <td>
-      ឯកសារដល់:<br />
+      ឯកសារដល់: {{ sentAgo }}<br />
       <span class="bold">{{ doc.sentTo }}</span><br />
-      <small class="fs-95 text-muted">
-        {{ sentAgo }}
+      <small class="fs-95 text-muted">        
       </small>
     </td>
 
@@ -58,38 +58,37 @@
       </span>
     </td>
 
-<!-- ACTIONS -->
 <td class="tbl_action">
-  <div class="flex gap-2">
-    <!-- VIEW -->
-    <button
-      class="action-btn view"
+  <span class="row_ac_w">
+    <span
+      class="row_ac_in ocm-tooltip ocm-viac view"
       title="មើលឯកសារ"
       @click="goToDetail"
     >
-      👁
-    </button>
+    <span class="tip_txt">បង្ហាញឯកសារ</span>
+    <span class="d-flex"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="76.03 186 871.95 652"><path d="M396 512a112 112 0 1 0 224 0a112 112 0 1 0-224 0zm546.2-25.8C847.4 286.5 704.1 186 512 186c-192.2 0-335.4 100.5-430.2 300.3a60.3 60.3 0 0 0 0 51.5C176.6 737.5 319.9 838 512 838c192.2 0 335.4-100.5 430.2-300.3c7.7-16.2 7.7-35 0-51.5zM508 688c-97.2 0-176-78.8-176-176s78.8-176 176-176s176 78.8 176 176s-78.8 176-176 176z" fill="currentColor"></path></svg></span>
+    </span>
 
-    <!-- EDIT -->
-    <button
-      class="action-btn edit"
+    <span
+      class="row_ac_in ocm-tooltip ocm-edac edit"
       title="កែប្រែ"
       @click="goToEdit"
       :disabled="doc.status === 'approved'"
     >
-      ✏️
-    </button>
+    <span class="tip_txt">កែឯកសារ</span>
+    <span class="d-flex"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="3 1.88 19.12 19.12"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-3"></path><path d="M9 15h3l8.5-8.5a1.5 1.5 0 0 0-3-3L9 12v3"></path><path d="M16 5l3 3"></path></g></svg></span>
+    </span>
 
-    <!-- DELETE -->
-    <button
-      class="action-btn delete"
+    <span
+      class="row_ac_in ocm-tooltip ocm-rmac delete"
       title="លុប"
       @click="deleteRow"
       :disabled="doc.status === 'approved'"
     >
-      🗑
-    </button>
-  </div>
+    <span class="tip_txt">លុបឯកសារ</span>
+    <span class="d-flex"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 448 512"><path d="M32 464a48 48 0 0 0 48 48h288a48 48 0 0 0 48-48V128H32zm272-256a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zM432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z" fill="currentColor"></path></svg></span>
+    </span>
+  </span>
 </td>
 
   </tr>
@@ -99,6 +98,7 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { documents } from '@/data/documents'
+import { formatKhmerNumber, formatDateKhmer } from '@/lib/utils.js'
 
 /* ===================== PROPS ===================== */
 const props = defineProps({
@@ -176,15 +176,15 @@ const sentAgo = computed(() => {
   const past = new Date(props.doc.sentAt)
   const diffSeconds = Math.floor((now - past) / 1000)
 
-  if (diffSeconds < 60) return `${diffSeconds} វិនាទីមុន`
+  if (diffSeconds < 60) return `${formatKhmerNumber(diffSeconds)} វិនាទីមុន`
 
   const minutes = Math.floor(diffSeconds / 60)
-  if (minutes < 60) return `${minutes} នាទីមុន`
+  if (minutes < 60) return `${formatKhmerNumber(minutes)} នាទីមុន`
 
   const hours = Math.floor(minutes / 60)
-  if (hours < 24) return `${hours} ម៉ោងមុន`
+  if (hours < 24) return `${formatKhmerNumber(hours)} ម៉ោងមុន`
 
   const days = Math.floor(hours / 24)
-  return `${days} ថ្ងៃមុន`
+  return `${formatKhmerNumber(days)} ថ្ងៃមុន`
 })
 </script>

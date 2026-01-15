@@ -1,5 +1,5 @@
 <template>
-  <Header />
+  <Header title="លំហូរឯកសារទីស្តីការគណៈរដ្ឋមន្ត្រី" />
   <section class="appppw">
   <Aside />
   <div class="sw">
@@ -17,7 +17,7 @@
         <div class="ocmopt-meta">
           <div class="ocmopt-meta-title"><label class="ocmopt-meta-label" for="title">ចំណងជើង</label></div>
           <div class="ocmopt-meta-content ocm_meta_check">
-            <input id="title" v-model="form.title" type="text" autocomplete="off" required />
+            <input id="title" class="form-control" v-model="form.title" type="text" autocomplete="off" required />
           </div>
         </div>
       </div>
@@ -26,7 +26,7 @@
         <div class="ocmopt-meta">
           <div class="ocmopt-meta-title"><label class="ocmopt-meta-label" for="description">ខ្លឹមសារ</label></div>
           <div class="ocmopt-meta-content ocm_meta_check">
-            <textarea id="description" v-model="form.description" cols="60" rows="5" required></textarea>
+            <textarea id="description" class="form-control" v-model="form.description" cols="60" rows="5" required></textarea>
           </div>
         </div>
       </div>

@@ -33,18 +33,18 @@ onUnmounted(() => {
 <style>
 .scroll-top-btn {
   position: fixed;
-  width: 33px;
-  height: 33px;
+  width: 30px;
+  height: 30px;
   bottom: 10px;
   right: 10px;
   background: var(--ocm-sec-color);
   color: #fff;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;  
 }
 .scroll-top-btn svg{
-  width: .85em;
+  width: .65em;
   height: 100%;
 }
 </style>

@@ -41,6 +41,7 @@ const props = defineProps({
   modelValue: { type: null, required: false },
   multiple: { type: Boolean, required: false },
   disableDaysOutsideCurrentView: { type: Boolean, required: false },
+  layout: { type: String, required: false },
   asChild: { type: Boolean, required: false },
   as: { type: null, required: false },
   class: { type: null, required: false },

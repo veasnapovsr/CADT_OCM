@@ -1,5 +1,5 @@
 <template>
-  <div class="jl_filter_bar">
+  <div class="d-flex ocm_t_num mb-5">
     <slot />
   </div>
 </template>

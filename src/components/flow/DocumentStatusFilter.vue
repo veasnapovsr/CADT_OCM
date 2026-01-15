@@ -1,4 +1,4 @@
-sd<template>
+<template>
   <div class="items">
     <select
       :value="modelValue"

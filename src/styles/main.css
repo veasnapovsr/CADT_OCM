@@ -1,23 +1,91 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Khmer:wght@400;700;900&display=swap');
 @font-face {
   font-family: 'KhmerMuol';
-  src: url('fonts/KhmerMoul.woff2') format('woff2'),
-       url('fonts/KhmerMoul.woff') format('woff'),
-       url('fonts/KhmerMoul.ttf') format('truetype');
+  src: url('../assets/fonts/KhmerMoul.woff2') format('woff2'),
+       url('../assets/fonts/KhmerMoul.woff') format('woff'),
+       url('../assets/fonts/KhmerMoul.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
+:root {
+  --radius: .625rem;
+    --background: oklch(100% 0 0);
+    --foreground: oklch(14.5% 0 0);
+    --card: oklch(100% 0 0);
+    --card-foreground: oklch(14.5% 0 0);
+    --popover: oklch(100% 0 0);
+    --popover-foreground: oklch(14.5% 0 0);
+    --primary: oklch(20.5% 0 0);
+    --primary-foreground: oklch(98.5% 0 0);
+    --secondary: oklch(97% 0 0);
+    --secondary-foreground: oklch(20.5% 0 0);
+    --muted: oklch(97% 0 0);
+    --muted-foreground: oklch(55.6% 0 0);
+    --accent: oklch(97% 0 0);
+    --accent-foreground: oklch(20.5% 0 0);
+    --destructive: oklch(57.7% .245 27.325);
+    --border: oklch(92.2% 0 0);
+    --input: oklch(92.2% 0 0);
+    --ring: oklch(70.8% 0 0);
+    --chart-1: var(--color-blue-300);
+    --chart-2: var(--color-blue-500);
+    --chart-3: var(--color-blue-600);
+    --chart-4: var(--color-blue-700);
+    --chart-5: var(--color-blue-800);
+    --sidebar: oklch(98.5% 0 0);
+    --sidebar-foreground: oklch(14.5% 0 0);
+    --sidebar-primary: oklch(20.5% 0 0);
+    --sidebar-primary-foreground: oklch(98.5% 0 0);
+    --sidebar-accent: oklch(97% 0 0);
+    --sidebar-accent-foreground: oklch(20.5% 0 0);
+    --sidebar-border: oklch(92.2% 0 0);
+    --sidebar-ring: oklch(70.8% 0 0);
+    --surface: oklch(98% 0 0);
+    --surface-foreground: var(--foreground);
+    --code: var(--surface);
+    --code-foreground: var(--surface-foreground);
+    --code-highlight: oklch(96% 0 0);
+    --code-number: oklch(56% 0 0);
+    --selection: oklch(14.5% 0 0);
+    --selection-foreground: oklch(100% 0 0);
+}
+
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+
+  --primary: 210 40% 98%;
+  --primary-foreground: 222.2 47.4% 11.2%;
+
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 212.7 26.8% 83.9%;
+}
+
 @import "tailwindcss";
-
 @import "tw-animate-css";
-
-/* Custom style */
-
 body.ocm_dark_skin{
   --ocm-prim-color: #d1dcff;
   --ocm-sec-color: #00a8ff;
-  /* --ocm-sec-color: #0879fb; */
   --ocm-head-bg: #2c3244;
   --ocm-head-color: #fff;  
   --ocm-bg: #1e212c;
@@ -34,10 +102,8 @@ body.ocm_dark_skin{
   --ocm-input-shadow: #497ffc;
   --ocm-input-border: #363a48;
   --ocm-input-color: #fff;
-  background: var(--ocm-bg);
   color: var(--ocm-color);
-  background-image: url(pattern_dark.svg);
-  background-size: 20px;
+  background: var(--ocm-bg);  
 }
 body{
     --ocm-heading-font: 'KhmerMuol';
@@ -64,12 +130,14 @@ body{
     --ocm-input-color: #000;
     --ocm-sm-radius: 6px;
     --ocm-title-lspace: -0.07em;
-    background-color: var(--ocm-bg);
     color: var(--ocm-color);
     letter-spacing: -0.02em;
-    background-size: 20px; 
-      
+    background-color: var(--ocm-bg);    
 }
+*,::after,::before{box-sizing:border-box }
+* { margin: 0px; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+body, *{ font-family: var(--ocm-primary-font), -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen-Sans, Ubuntu, Cantarell, sans-serif !important; }
+:not(:root):fullscreen::backdrop { display: none; }
 body.ocm_dark_skin .ocm_head.ocmapp_hd{
   border-color: transparent;
 }
@@ -83,12 +151,11 @@ body.ocm_dark_skin .ts-wrapper:not(.form-control,.form-select).single .ts-contro
   background-color: var(--ocm-app-bg);
   border: 1px solid var(--ocm-input-border);
 }
-:not(:root):fullscreen::backdrop { display: none; }
-*,::after,::before{box-sizing:border-box }
-* { margin: 0px; padding: 0px; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-body, *{ font-family: var(--ocm-primary-font), -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen-Sans, Ubuntu, Cantarell, sans-serif !important; }
 .t-lspace{
   letter-spacing: var(--ocm-title-lspace);
+}
+.t-center{
+  text-align: center;
 }
 .d-flex{
   display: flex !important;
@@ -149,7 +216,7 @@ body, *{ font-family: var(--ocm-primary-font), -apple-system, BlinkMacSystemFont
   bottom: 0px;
 }
 /* Form Element */
-input[type='text']{
+input[type='text'].form-control{
   font-size: 18px;
   min-height: 48px;
   line-height: 32px;
@@ -161,7 +228,7 @@ input[type='text']{
   line-height: 32px;
   border-radius: 4px;
 }
-[type='text'],[type='email'],[type='url'],[type='password'],[type='number'],[type='date'],[type='datetime-local'],[type='month'],[type='search'],[type='tel'],[type='time'],[type='week'],[multiple],textarea,select{  
+[type='text'].form-control, [type='email'].form-control, [type='url'].form-control, [type='password'].form-control, [type='number'].form-control, [type='date'].form-control, [type='datetime-local'].form-control, [type='month'].form-control,[type='search'].form-control, [type='tel'].form-control, [type='time'].form-control,[type='week'].form-control,[multiple].form-control,textarea.form-control,select.form-control{  
   background-color: var(--ocm-app-bg);
   border: 1px solid var(--ocm-input-border);
   color: var(--ocm-input-color);
@@ -317,7 +384,7 @@ a{ text-decoration: none; }
   line-height: 1.4;
 }
 .sw{
-    padding: 25px 50px 0px 125px;
+    padding: 25px 50px 0px 115px;
 }
 .wr404 .ocm_sucs_w .ico_w svg{
   width: 180px;
@@ -1135,7 +1202,7 @@ body:not(.app_snav_open) .app_snav:hover{
     opacity: 1;
     z-index: 9
 }
-.row_ac_in.ocm-rmac span{
+.row_ac_in.ocm-rmac .tip_txt{
   transform: translate3d(-80%, 0, 0);
 }
 .row_ac_in.ocm-rmac.ocm-tooltip>span:after{
@@ -1171,6 +1238,9 @@ body:not(.app_snav_open) .app_snav:hover{
 }
 .mb-20{
   margin-bottom: 20px;
+}
+.mb-30{
+  margin-bottom: 30px;
 }
 .cols1{
   --grid-col-num: 1;
@@ -1216,6 +1286,7 @@ body:not(.app_snav_open) .app_snav:hover{
   padding: 4px;
   border-radius: var(--ocm-sm-radius);
   color: currentColor;
+  cursor: pointer;
 }
 .ocm_ac_view .acv_it.active, .ocm_ac_view .acv_it:hover{
   background: var(--ocm-sec-color);
@@ -1225,18 +1296,21 @@ body:not(.app_snav_open) .app_snav:hover{
   gap: 5px;
 }
 .ocm_filter_w .items{
-  width: 150px;
+  width: 180px;
   position: relative;
 }
 .ocm_filter_w .tip_txt{
   max-width: 350px !important;
   bottom: 114% !important;
 }
-.ocm_filter_w input, .ocm_filter_w select{
+.ocm_filter_w input.form-control, .ocm_filter_w select.form-control, .items > .filter-select{
   width: 100% !important;
   min-height: 35px;
   height: 35px;
   font-size: 15px;
+  border-radius: 4px;
+  background-color: var(--ocm-app-bg);
+  border: 1px solid var(--ocm-input-border)
 }
 .ocm_filter_w .button-primary{
   font-size: 15px;
@@ -1578,16 +1652,17 @@ table.wp-list-table .type-ocmdb_data .column-title .row-actions .trash a:before{
 }
 .ocm_docf{
   background: #fff3f4;
-  color: #000;
+  color: #d92411;
   min-width: 38px;
   font-size: 9px;
   gap: 3px;
   padding: 6px 10px 4px 10px;
   border-radius: 4px;
+  font-weight: bold;
 }
 .ocm_docf svg{
   width: 1.8em;
-  color: #d92411;
+  color: currentColor;
 }
 .ocsml.jl_tbl_w{
   gap: 6px;
@@ -1696,22 +1771,6 @@ table.wp-list-table .type-ocmdb_data .column-title .row-actions .trash a:before{
   margin: 3px 0px 0px 0px;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 }
-.ocm_chart_card{
-  border-radius: 5px;
-  background: var(--ocm-app-bg);
-  border: 1px solid var(--ocm-app-border);
-  padding: 15px;
-  height: 100%;
-  display: flex;
-}
-.ocm_chart_card img{
-  width: 100%;
-  height: 100%;
-  display: block;
-  border-radius: 5px;
-  object-fit: contain;
-}
-
 .ocm_bfw{
   width: 100%;
   display: grid;
@@ -1725,35 +1784,55 @@ table.wp-list-table .type-ocmdb_data .column-title .row-actions .trash a:before{
   margin-top: 25px;
   margin-bottom: 15px;
 }
-.ocm_bfw.ocm_barw h2{
-  font-size: 23px;
+.card_tt{
+  font-size: 20px;
+  width: calc(100% + 30px);
+  padding: 10px 0px 10px 15px;
+  margin: -15px 0px 15px -15px;
+  border-bottom: 1px solid var(--ocm-app-border);
+}
+.ocm_doc_fr{
+  font-size: 15px;
+}
+.ocm_doc_fr .jl_tbl_w:not(:last-child){
+  border-bottom: 1px solid var(--ocm-app-border);
+  padding-bottom: 5px;
   margin-bottom: 5px;
 }
-.ocm_bfw .ocm_caw{
+.ocm_dcnew .ocm_docf{
+  background-color: #e4ebfe;
+  color: #4755ff;
+}
+.ocm_dcwait .ocm_docf{
+  background-color: #feefcc;
+  color: #fba500;
+}
+.ocm_bfw .ocm_caw, .ocm_bfw .ocm_caw.noneh:hover, .ocm_card{
   cursor: pointer;
   position: relative;
   border-radius: 5px;  
   background: var(--ocm-app-bg);
-  border: 1px solid var(--ocm-app-border);  
+  border: 1px solid var(--ocm-app-border);
+  cursor: auto;
 }
 .ocm_bfw .ocm_caw:hover{
   background-color: var(--ocm-th-bg);
   border: 1px solid #c4cfe9;
+  cursor: pointer;
 }
 body:not(.ocm_dark_skin) .ocm_bfw .ocm_caw:hover .ocm_icard{
-  background: rgba(255, 255, 255, .5) !important;
+  background: rgba(255, 255, 255, .5);
 }
 .ocm_bfw.ocm_stat .ocm_card_body{
   text-align: left;
   align-items: flex-start;
   gap: 3px;
 }
-.ocm_bfw .ocm_card_body{
+.ocm_card_body{
+  position: relative;
   padding: 15px;
-  text-align: center;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: column;  
 }
 .ocm_bfw .ocm_icardw{
   display: flex;
@@ -1761,7 +1840,7 @@ body:not(.ocm_dark_skin) .ocm_bfw .ocm_caw:hover .ocm_icard{
   justify-content: space-between;
   width: 100%;
 }
-.ocm_bfw .ocm_caw .ocm_icard{
+.ocm_bfw .ocm_caw .ocm_icard, .ocm_bfw .ocm_caw.noneh.status_all:hover .ocm_icard{
   width: 33px;
   height: 33px;
   border-radius: 7px;
@@ -1775,17 +1854,21 @@ body:not(.ocm_dark_skin) .ocm_bfw .ocm_caw:hover .ocm_icard{
   width: 1em;
   height: auto;
 }
-.ocm_bfw .ocm_caw.status_wait .ocm_icard{
+.ocm_bfw .ocm_caw.status_wait .ocm_icard, .ocm_bfw .ocm_caw.noneh.status_wait:hover .ocm_icard{
   background-color: #feefcc;
   color: #fba500;
 }
-.ocm_bfw .ocm_caw.status_accept .ocm_icard{
+.ocm_bfw .ocm_caw.status_accept .ocm_icard, .ocm_bfw .ocm_caw.noneh.status_accept:hover .ocm_icard{
   background-color: #d2f4ee;
   color: #10b981;
 }
-.ocm_bfw .ocm_caw.status_decline .ocm_icard{
+.ocm_bfw .ocm_caw.status_decline .ocm_icard, .ocm_bfw .ocm_caw.noneh.status_decline:hover .ocm_icard{
   background-color: #fadede;
   color: #ff0000;
+}
+.ocm_bfw .ocm_caw.status_draft .ocm_icard, .ocm_bfw .ocm_caw.noneh.status_draft:hover .ocm_icard{
+  background-color: #e6e6e6;
+  color: #726f6f;
 }
 .ocm_bfw .ocm_card_value{
   font-size: 23px;
@@ -1915,6 +1998,8 @@ body:not(.ocm_dark_skin) .ocm_bfw .ocm_caw:hover .ocm_icard{
 }
 .ocm_status.acdecl{
   background-color: #ffb5b8;
+  /* background: #ff4c51;
+  color: #fff; */
 }
 .ocm_pover_wr{
   position: relative;
@@ -1963,7 +2048,7 @@ body:not(.ocm_dark_skin) .ocm_bfw .ocm_caw:hover .ocm_icard{
   padding: 0px 10px;
   height: 35px;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 7px;
   width: 100%;
   cursor: pointer;
@@ -2015,7 +2100,7 @@ body:not(.ocm_dark_skin) .ocm_bfw .ocm_caw:hover .ocm_icard{
 .noti_list .tb_n1.bold.fs-90{
   font-weight: 400;
 }
-.noti_head .noti_clear{
+.noti_head .noti_clear, .ocm_lbl{
   background-color: #ffe27a;
   color: #000;
   height: 22px;
@@ -2053,6 +2138,9 @@ body:not(.ocm_dark_skin) .ocm_bfw .ocm_caw:hover .ocm_icard{
 }
 .fs-95{
   font-size: 95%;
+}
+.fs-90{
+  font-size: 90%;
 }
 .ellip-2{
   overflow: hidden;
@@ -2366,16 +2454,7 @@ body:not(.ocm_dark_skin) .ocm_bfw .ocm_caw:hover .ocm_icard{
   height: 35px;
   font-size: 15px;
 }
-:root {
-  --background: 0 0% 100%;
-  --foreground: 222.2 84% 4.9%;
 
-  --popover: 0 0% 100%;
-  --popover-foreground: 222.2 84% 4.9%;
-
-  --border: 214.3 31.8% 91.4%;
+.bg-popover {
+  background-color: var(--popover);
 }
-
-
-
-

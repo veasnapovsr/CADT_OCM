@@ -76,7 +76,7 @@
   <div class="ocm_card_content">
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
-      <h3 class="text-base font-khmer h-10 text-blue-600">
+      <h3 class="text-base h t-lspace h-10 text-blue-600">
         ប្រវត្តិរូប
       </h3>
     </div>
@@ -172,7 +172,7 @@
     <div class="ocm_card_wr relative -top-5">
       <div class="ocm_card_content">
          <div class="flex items-center justify-between mb-6">
-    <h3 class="text-base font-khmer h-10 text-blue-600">
+    <h3 class="text-base h t-lspace h-10 text-blue-600">
       ប្រវត្តិរូបផ្ទាល់ខ្លួន
     </h3>
   </div>

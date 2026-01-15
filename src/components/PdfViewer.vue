@@ -8,6 +8,23 @@ import pdfWorker from 'pdfjs-dist/build/pdf.worker?url'
 ========================= */
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker
 
+// Configure PDF.js to handle JPEG2000 errors gracefully
+// Suppress JPEG2000/OpenJPEG warnings - they're non-critical
+// The PDF will still render, just without JPEG2000 images
+let originalWarn = null
+if (typeof window !== 'undefined') {
+  originalWarn = console.warn.bind(console)
+  const warnFilter = function(...args) {
+    // Suppress JPEG2000/OpenJPEG errors - they're non-critical
+    if (args[0] && typeof args[0] === 'string' && 
+        (args[0].includes('JpxError') || args[0].includes('OpenJPEG'))) {
+      return
+    }
+    originalWarn(...args)
+  }
+  console.warn = warnFilter
+}
+
 /* =========================
    PROPS
 ========================= */
@@ -155,7 +172,18 @@ async function buildThumbnails() {
     canvas.width = Math.floor(viewport.width)
     canvas.height = Math.floor(viewport.height)
 
-    await page.render({ canvasContext: ctx, viewport }).promise
+    try {
+      await page.render({ 
+        canvasContext: ctx, 
+        viewport,
+        enableWebGL: false
+      }).promise
+    } catch (error) {
+      console.warn(`Failed to render thumbnail for page ${i}:`, error)
+      // Draw a placeholder for thumbnail
+      ctx.fillStyle = '#f0f0f0'
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+    }
 
     const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/webp', 0.85))
     const url = URL.createObjectURL(blob)
@@ -173,7 +201,18 @@ async function loadPdf() {
   freeze.value = true
 
   try {
-    pdfDoc.value = await pdfjsLib.getDocument(props.src).promise
+    // Configure PDF.js loading options
+    const loadingTask = pdfjsLib.getDocument({
+      url: props.src,
+      // Disable JPEG2000 to avoid OpenJPEG errors
+      disableAutoFetch: false,
+      disableStream: false,
+      // Continue loading even if some images fail
+      stopAtErrors: false,
+      verbosity: pdfjsLib.VerbosityLevel.ERRORS
+    })
+    
+    pdfDoc.value = await loadingTask.promise
     if (token !== renderToken) return
 
     totalPages.value = pdfDoc.value.numPages
@@ -186,6 +225,20 @@ async function loadPdf() {
     // thumbnails build after (non-blocking feel)
     // still awaited here for simplicity; you can change later
     await buildThumbnails()
+  } catch (error) {
+    console.error('Failed to load PDF:', error)
+    // Show error message to user
+    const sc = scrollRef.value
+    if (sc) {
+      sc.innerHTML = `
+        <div style="padding: 40px; text-align: center; color: #fff;">
+          <h3>Failed to load PDF</h3>
+          <p>${error.message || 'Unknown error'}</p>
+        </div>
+      `
+    }
+    freeze.value = false
+    isRendering = false
   } finally {
     // renderPages handles unfreezing at the right time
   }
@@ -232,7 +285,22 @@ async function renderPages(resetScroll = false) {
 
     sc.appendChild(wrap)
 
-    await page.render({ canvasContext: ctx, viewport }).promise
+    try {
+      await page.render({ 
+        canvasContext: ctx, 
+        viewport,
+        enableWebGL: false
+      }).promise
+    } catch (error) {
+      // If rendering fails completely, show placeholder
+      console.warn(`Failed to render page ${i}:`, error)
+      ctx.fillStyle = '#f0f0f0'
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      ctx.fillStyle = '#666'
+      ctx.font = '16px Arial'
+      ctx.textAlign = 'center'
+      ctx.fillText('Unable to render this page', canvas.width / 2, canvas.height / 2)
+    }
   }
 
   if (token !== renderToken) return
