@@ -8,23 +8,6 @@ import pdfWorker from 'pdfjs-dist/build/pdf.worker?url'
 ========================= */
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker
 
-// Configure PDF.js to handle JPEG2000 errors gracefully
-// Suppress JPEG2000/OpenJPEG warnings - they're non-critical
-// The PDF will still render, just without JPEG2000 images
-let originalWarn = null
-if (typeof window !== 'undefined') {
-  originalWarn = console.warn.bind(console)
-  const warnFilter = function(...args) {
-    // Suppress JPEG2000/OpenJPEG errors - they're non-critical
-    if (args[0] && typeof args[0] === 'string' && 
-        (args[0].includes('JpxError') || args[0].includes('OpenJPEG'))) {
-      return
-    }
-    originalWarn(...args)
-  }
-  console.warn = warnFilter
-}
-
 /* =========================
    PROPS
 ========================= */
@@ -38,7 +21,8 @@ const props = defineProps({
 const scrollRef = ref(null)
 const pdfDoc = shallowRef(null)
 
-const scale = ref(1)
+const scale = ref(1.2)
+const visualScale = ref(1.2) // 👈 ADD THIS
 const totalPages = ref(0)
 const currentPage = ref(1)
 const pageInput = ref('1')
@@ -46,13 +30,14 @@ const pageInput = ref('1')
 const showSidebar = ref(false)
 const thumbs = ref([]) // [{ page, url }]
 
-const MIN_SCALE = 0.6
+const MIN_SCALE = 1
 const MAX_SCALE = 3
 const STEP = 0.1
 
 let observer = null
 let isRendering = false
 let renderToken = 0
+let zoomTimer = null // 👈 ADD THIS
 
 // Used to prevent “flash to top” during zoom
 const freeze = ref(false)
@@ -160,7 +145,7 @@ async function buildThumbnails() {
   if (!pdfDoc.value) return
 
   // small scale thumbnails
-  const thumbScale = 0.18
+  const thumbScale = 0.35
 
   for (let i = 1; i <= totalPages.value; i++) {
     const page = await pdfDoc.value.getPage(i)
@@ -172,18 +157,7 @@ async function buildThumbnails() {
     canvas.width = Math.floor(viewport.width)
     canvas.height = Math.floor(viewport.height)
 
-    try {
-      await page.render({ 
-        canvasContext: ctx, 
-        viewport,
-        enableWebGL: false
-      }).promise
-    } catch (error) {
-      console.warn(`Failed to render thumbnail for page ${i}:`, error)
-      // Draw a placeholder for thumbnail
-      ctx.fillStyle = '#f0f0f0'
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
-    }
+    await page.render({ canvasContext: ctx, viewport }).promise
 
     const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/webp', 0.85))
     const url = URL.createObjectURL(blob)
@@ -199,50 +173,21 @@ async function loadPdf() {
   const token = ++renderToken
   isRendering = true
   freeze.value = true
+  visualScale.value = scale.value
 
   try {
-    // Configure PDF.js loading options
-    const loadingTask = pdfjsLib.getDocument({
-      url: props.src,
-      // Disable JPEG2000 to avoid OpenJPEG errors
-      disableAutoFetch: false,
-      disableStream: false,
-      // Continue loading even if some images fail
-      stopAtErrors: false,
-      verbosity: pdfjsLib.VerbosityLevel.ERRORS
-    })
-    
-    pdfDoc.value = await loadingTask.promise
+    pdfDoc.value = await pdfjsLib.getDocument(props.src).promise
     if (token !== renderToken) return
 
     totalPages.value = pdfDoc.value.numPages
     currentPage.value = 1
     pageInput.value = '1'
 
-    // render pages first (so user can see quickly)
     await renderPages(true)
-
-    // thumbnails build after (non-blocking feel)
-    // still awaited here for simplicity; you can change later
     await buildThumbnails()
-  } catch (error) {
-    console.error('Failed to load PDF:', error)
-    // Show error message to user
-    const sc = scrollRef.value
-    if (sc) {
-      sc.innerHTML = `
-        <div style="padding: 40px; text-align: center; color: #fff;">
-          <h3>Failed to load PDF</h3>
-          <p>${error.message || 'Unknown error'}</p>
-        </div>
-      `
-    }
-    freeze.value = false
-    isRendering = false
-  } finally {
-    // renderPages handles unfreezing at the right time
-  }
+  } finally {}
 }
+
 
 /* =========================
    RENDER ALL PAGES
@@ -256,8 +201,9 @@ async function renderPages(resetScroll = false) {
   const token = ++renderToken
 
   // freeze UI so it doesn't show top before restore
-  freeze.value = true
-  isRendering = true
+ isRendering = true
+if (resetScroll) freeze.value = true
+
 
   const anchor = resetScroll ? { page: 1, ratio: 0.5 } : captureAnchor()
 
@@ -285,22 +231,7 @@ async function renderPages(resetScroll = false) {
 
     sc.appendChild(wrap)
 
-    try {
-      await page.render({ 
-        canvasContext: ctx, 
-        viewport,
-        enableWebGL: false
-      }).promise
-    } catch (error) {
-      // If rendering fails completely, show placeholder
-      console.warn(`Failed to render page ${i}:`, error)
-      ctx.fillStyle = '#f0f0f0'
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
-      ctx.fillStyle = '#666'
-      ctx.font = '16px Arial'
-      ctx.textAlign = 'center'
-      ctx.fillText('Unable to render this page', canvas.width / 2, canvas.height / 2)
-    }
+    await page.render({ canvasContext: ctx, viewport }).promise
   }
 
   if (token !== renderToken) return
@@ -329,15 +260,15 @@ async function renderPages(resetScroll = false) {
    CONTROLS
 ========================= */
 function zoomIn() {
-  if (isRendering) return
-  const next = round1(clamp(scale.value + STEP, MIN_SCALE, MAX_SCALE))
-  if (next !== scale.value) scale.value = next
+ const next = round1(clamp(visualScale.value + STEP, MIN_SCALE, MAX_SCALE))
+  visualScale.value = next   // 👈 instant visual zoom
+  scale.value = next    
 }
 
 function zoomOut() {
-  if (isRendering) return
-  const next = round1(clamp(scale.value - STEP, MIN_SCALE, MAX_SCALE))
-  if (next !== scale.value) scale.value = next
+ const next = round1(clamp(visualScale.value - STEP, MIN_SCALE, MAX_SCALE))
+  visualScale.value = next
+  scale.value = next
 }
 
 function goToPage() {
@@ -373,7 +304,13 @@ function downloadPdf() {
 /* =========================
    WATCHERS
 ========================= */
-watch(scale, () => renderPages(false))
+watch(scale, () => {
+  clearTimeout(zoomTimer)
+  zoomTimer = setTimeout(() => {
+    renderPages(false)
+  }, 150)
+})
+
 watch(() => props.src, () => loadPdf())
 
 /* =========================
@@ -403,7 +340,7 @@ onBeforeUnmount(() => {
 
       <div class="tb-mid">
         <button class="tb-btn" @click="zoomOut" title="Zoom out">−</button>
-        <span class="zoom-text">{{ Math.round(scale * 100) }}%</span>
+        <span class="zoom-text">{{ Math.round(visualScale * 100) }}%</span>
         <button class="tb-btn" @click="zoomIn" title="Zoom in">+</button>
       </div>
 
@@ -446,6 +383,7 @@ onBeforeUnmount(() => {
           ref="scrollRef"
           class="pdf-scroll"
           :class="{ frozen: freeze }"
+          :style="{ transform: `scale(${visualScale})`, transformOrigin: 'top center' }"
         ></div>
       </div>
     </div>
@@ -458,15 +396,15 @@ onBeforeUnmount(() => {
 .pdf-root {
   height: 100%;
   width: 100%;
-  background: #2b2b2b;
+  background: #c8c8c8;
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
 .pdf-toolbar {
-  height: 56px;
-  background: #3a3a3a;
+  height: 52px;
+  background: #747474;
   color: #fff;
   display: flex;
   align-items: center;
@@ -533,7 +471,7 @@ onBeforeUnmount(() => {
 .pdf-sidebar {
   width: 0;
   overflow: hidden;
-  background: #1f1f1f;
+  background: #747474;
   color: #fff;
   transition: width .2s ease;
   border-right: 1px solid rgba(255,255,255,.06);
@@ -613,7 +551,7 @@ onBeforeUnmount(() => {
 
 /* ✅ This is the "no flash to page 1" fix */
 .pdf-scroll.frozen {
-  visibility: hidden;
+  opacity: 0;
 }
 
 .pdf-page {

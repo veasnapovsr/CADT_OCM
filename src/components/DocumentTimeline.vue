@@ -1,8 +1,8 @@
 <template>
-  <div class="bg-white rounded-2xl border p-6 h-full">
+  <div class=" h-full">
 
     <!-- TITLE -->
-    <h3 class="text-lg font-semibold mb-6">
+    <h3 class="text-lg font-khmer font-bold mb-10">
       ស្ថានភាពដំណើរការឯកសារ
     </h3>
 
@@ -16,7 +16,6 @@
       >
         <!-- LEFT ICON + LINE -->
         <div class="relative flex flex-col items-center">
-
           <!-- ICON -->
           <div
             class="w-9 h-9 rounded-full flex items-center justify-center"
@@ -69,89 +68,223 @@
 
         <!-- CONTENT -->
         <div class="flex-1">
-          <div class="flex justify-between">
-            <p class="font-semibold" :class="textClass(index)">
-              {{ step.title }}
-            </p>
-            <span class="text-sm text-gray-400">
-              {{ step.time }}
-            </span>
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="font-semibold" :class="textClass(index)">
+                {{ step.title }}
+              </p>
+              <p class="text-sm text-gray-500">
+                {{ step.subtitle }}
+              </p>
+            </div>
+
+            <!-- SEND BACK BUTTON -->
+            <button
+              class="text-sm text-red-500 hover:underline"
+              @click="replyingIndex = index"
+            >
+              ↩ បញ្ជូនទៅវិញ
+            </button>
           </div>
 
-          <p class="text-sm text-gray-500">
-            {{ step.subtitle }}
-          </p>
-        </div>
-      </div>
+          <span class="text-xs text-gray-400 block mt-1">
+            {{ step.time }}
+          </span>
 
-      <!-- COMMENT (ONLY WHEN YELLOW OR RED EXISTS) -->
-      <div v-if="showComment" class="pt-4">
-        <label class="block font-semibold mb-2 text-yellow-600">
-          មតិយោបល់
-        </label>
-
-        <textarea
-          v-model="comment"
-          rows="3"
-          placeholder="បញ្ចូលមតិយោបល់..."
-          class="w-full rounded-lg border p-3 text-sm focus:ring-2 focus:ring-blue-500"
-        />
-
-        <div class="text-right mt-3">
-          <button
-            class="inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm"
+          <!-- COMMENT BOX (ONLY WHEN CLICKED) -->
+          <div
+            v-if="replyingIndex === index"
+            class="mt-4"
           >
-            ➤ បញ្ជូនមតិយោបល់
-          </button>
+            <textarea
+              v-model="comment"
+              rows="3"
+              placeholder="បញ្ចូលមតិយោបល់..."
+              class="w-full rounded-lg border p-3 text-sm focus:ring-2 focus:ring-blue-500"
+            />
+
+            <div class="text-right mt-3">
+              <button
+                class="inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm"
+                @click="sendComment(index)"
+              >
+                ➤ បញ្ជូនមតិយោបល់
+              </button>
+            </div>
+          </div>
+
         </div>
       </div>
 
     </div>
+    <!-- SEND DOCUMENT -->
+<div class="mt-10">
+
+  <!-- TITLE -->
+  <h4 class="font-khmer font-semibold mb-10">
+    បញ្ជូនឯកសារឱ្យ
+  </h4>
+
+ <!-- SEARCH + FILTER -->
+<div class="flex gap-4 mb-10">
+  <!-- SEARCH (LONGER, SOFT BORDER) -->
+  <div class="flex-[2]">
+    <input
+      v-model="search"
+      type="text"
+      placeholder="ស្វែងរក"
+      class="w-full rounded-lg border border-gray-200 px-4 py-2 text-sm
+             focus:border-blue-400 focus:ring-1 focus:ring-blue-400"
+    />
+  </div>
+
+  <!-- FILTER (SHORTER, MATCHING BORDER) -->
+  <div class="flex-[1]">
+   <select
+  v-model="filter"
+  class="w-full rounded-lg border border-gray-200
+         px-4 py-2
+         text-sm leading-relaxed
+         focus:border-blue-400 focus:ring-1 focus:ring-blue-400
+         appearance-none"
+>
+  <option value="" disabled hidden>
+    ជ្រើសរើសប្រភេទ
+  </option>
+  <option value="department">department1</option>
+  <option value="officer">department2</option>
+</select>
+
+
+  </div>
+</div>
+
+  <!-- PEOPLE LIST -->
+  <div class="space-y-4 ">
+    <div
+      v-for="person in filteredPeople"
+      :key="person.id"
+      class="flex items-center justify-between mb-10"
+    >
+      <!-- LEFT INFO -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-gray-300"></div>
+
+        <div>
+          <p class="text-sm font-medium text-blue-700">
+            {{ person.name }}
+          </p>
+          <p class="text-xs text-gray-500 flex items-center gap-1">
+            {{ person.unit }}
+          </p>
+        </div>
+      </div>
+
+      <!-- SEND BUTTON -->
+      <button
+        class="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm"
+        @click="sendTo(person)"
+      >
+        ➤ បញ្ជូនឯកសារ
+      </button>
+    </div>
+  </div>
+
+</div>
+
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
+import { documents } from '@/data/documents'
 
-/* ================= INPUT FROM API ================= */
-/*
+/* ================= STATUS FROM API =================
   1  = approved (green)
   0  = pending (yellow)
  -1  = rejected (red)
-*/
-const stepsStatus = ref([1, 1, -1, 1]) // 👈 change this to test
+==================================================== */
+const stepsStatus = ref([1, 1, 1, 0])
 
-/* ================= DATA ================= */
-const comment = ref('')
-
+/* ================= TIMELINE DATA ================= */
 const steps = [
   {
     id: 1,
-    title: 'បានបញ្ជូនឯកសារ',
-    subtitle: 'អ្នកប្រើប្រាស់ • អង្គភាព',
+    title: 'នាយកដ្ឋានរដ្ឋបាល',
+    subtitle: 'បានពិនិត្យ • ឯកឧត្តម ថោង សំអាត ',
     time: '06-មករា-2024 05:49'
   },
   {
     id: 2,
-    title: 'បានពិនិត្យឯកសារ',
-    subtitle: 'មន្ត្រីពាក់ព័ន្ធ',
+    title: 'ខុទ្ទកាល័យនឯប',
+    subtitle: 'បានពិនិត្យ • ឯកឧត្តម សៀង ឈុនទ្រី ',
     time: '06-មករា-2024 05:57'
   },
   {
     id: 3,
-    title: 'កំពុងពិនិត្យ',
-    subtitle: 'អង្គភាពពាក់ព័ន្ធ',
+    title: 'អង្គភាពជំនាញ',
+    subtitle: 'កំពុងរង់ចាំ',
     time: '—'
   },
   {
     id: 4,
-    title: 'បញ្ចប់ដំណើរការ',
-    subtitle: 'អនុម័តឯកសារ',
+    title: 'លើកកំណត់បង្ហាញ',
+    subtitle: 'កំពុងរង់ចាំ',
     time: '—'
   }
 ]
 
-/* ================= LOGIC ================= */
+/* ================= REPLY LOGIC ================= */
+const replyingIndex = ref(null)
+const comment = ref('')
+
+const sendComment = (index) => {
+  console.log('Send comment for step:', steps[index])
+  console.log('Comment:', comment.value)
+
+  comment.value = ''
+  replyingIndex.value = null
+}
+
+/* ================= SEND DOCUMENT ================= */
+const search = ref('')
+const filter = ref('')
+
+const people = ref(
+  Array.from(
+    new Map(
+      documents
+        .flatMap(doc => [
+          
+          doc.sentTo
+            ? { name: doc.sentTo, unit: 'អ្នកទទួលឯកសារ', type: 'department' }
+            : null
+        ])
+        .filter(Boolean)
+        .map(p => [p.name, p])
+    ).values()
+  ).map((p, i) => ({ id: i + 1, ...p }))
+)
+
+const filteredPeople = computed(() => {
+  return people.value.filter(person => {
+    const matchSearch =
+      person.name.includes(search.value) ||
+      person.unit.includes(search.value)
+
+    const matchFilter = filter.value
+      ? person.type === filter.value
+      : true
+
+    return matchSearch && matchFilter
+  })
+})
+
+const sendTo = (person) => {
+  console.log('Send document to:', person.name)
+}
+
+/* ================= STATUS HELPERS ================= */
 const stepStatus = (index) => {
   const value = stepsStatus.value[index]
   if (value === 1) return 'green'
@@ -159,11 +292,6 @@ const stepStatus = (index) => {
   return 'yellow'
 }
 
-const showComment = computed(() =>
-  stepsStatus.value.includes(0) || stepsStatus.value.includes(-1)
-)
-
-/* ================= STYLES ================= */
 const circleClass = (index) => {
   const s = stepStatus(index)
   if (s === 'green') return 'bg-green-100'
@@ -185,3 +313,4 @@ const textClass = (index) => {
   return 'text-yellow-600'
 }
 </script>
+

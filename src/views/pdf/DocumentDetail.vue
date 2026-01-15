@@ -3,49 +3,45 @@
   <Header />
 
   <section class="appppw">
-    <!-- SIDEBAR -->
-    <Aside />
+    <div class="flex h-[calc(100vh-64px)] overflow-hidden">
+      <!-- SIDEBAR -->
+      <Aside />
 
-    <!-- MAIN CONTENT WRAPPER -->
-    <div class="sw">
-      <div class="app_content">
+      <!-- MAIN CONTENT WRAPPER (KEEP sw) -->
+      <div class="sw flex flex-col flex-1 overflow-hidden">
+        <div class="app_content flex flex-col flex-1 overflow-hidden">
 
-        <!-- PAGE TITLE -->
-        <div class="ocm_cwr">
-          <h2 class="h wttt t-lspace">ឯកសារ PDF</h2>
-        </div>
-
-        <!-- ===== MAIN GRID ===== -->
-        <div class="ocm_card_wr">
-          <div
-            class="ocm_card_content p-4
-                   h-[calc(100vh-220px)]
-                   grid grid-cols-12 gap-4"
-          >
-
-            <!-- ===== LEFT : PDF VIEWER ===== -->
-            <div class="col-span-8 h-full overflow-hidden rounded-lg border">
-              <PdfViewer src="/public/docs/reportMenu.pdf" />
+          <!-- PAGE TITLE -->
+          <div class="ocm_cwr ">
+            <h2 class="h wttt t-lspace font-khmer font-bold text-blue-600">ផែនការសកម្មភាព ២០២៤-២០២៨ ដើម្បីអនុវត្ដវិធានការគន្លឹះក្នុងការកែទម្រង់រដ្ឋបាលសាធារណៈ</h2>
+          </div>
+          
+          <!-- PDF + TOOLS -->
+          <div class="flex flex-1 overflow-hidden">
+            <!-- LEFT : PDF -->
+            <div class="flex-1 overflow-hidden">
+              <PdfViewer
+                src="/public/docs/reportMenu.pdf"
+                class="w-full h-full"
+              />
             </div>
 
-            <!-- ===== RIGHT : WORKFLOW / TIMELINE ===== -->
+            <!-- RIGHT : WORKFLOW / TIMELINE -->
             <div
-              class="col-span-4 h-full overflow-y-auto
-                     rounded-lg border bg-white p-4"
+              class="w-[360px]   overflow-y-auto  p-4"
             >
               <DocumentTimeline />
             </div>
-
           </div>
+
         </div>
 
+        <!-- FOOTER -->
       </div>
-
-      <!-- FOOTER -->
-      <Footer />
     </div>
   </section>
 </template>
+
 
 <script setup>
 import Header from '@/components/Header.vue'
