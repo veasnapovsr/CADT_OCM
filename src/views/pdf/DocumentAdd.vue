@@ -13,77 +13,116 @@
       <div class="ocm_card_content">
       <div class="ocmopt-col cols1 mb-15">
 							<div class="ocmopt-meta">
-								<div class="ocmopt-meta-title"><label class="ocmopt-meta-label">កម្មវត្ថុ</label></div>
+								<div class="ocmopt-meta-title"><label class="ocmopt-meta-label t-lspace">កម្មវត្ថុ</label></div>
 								<div class="ocmopt-meta-content ocm_meta_check">
 									<textarea name="ocm_name" id="ocm_name" class="form-control" cols="60" rows="5"></textarea>
 								</div>
 							</div>
 						</div>
-						<div class="ocmopt-col cols4 mb-20">
+						<div class="ocmopt-col cols3 mb-20">
 							<div class="ocmopt-meta">
-								<div class="ocmopt-meta-title"><label class="ocmopt-meta-label">លិខិតលេខ</label></div>
+								<div class="ocmopt-meta-title"><label class="ocmopt-meta-label t-lspace">លិខិតលេខ</label></div>
 								<div class="ocmopt-meta-content">
 								<input id="dob" type="text" name="dob" autocomplete="off" class="form-control">
 								</div>
 							</div>
 
 							<div class="ocmopt-meta">
-								<div class="ocmopt-meta-title"><label class="ocmopt-meta-label">កាលបរិច្ឆេទ</label></div>
-								<div class="ocmopt-meta-content">
-								<input id="datetime_start" type="text" name="dob" autocomplete="off" class="form-control" placeholder="dd-mm-yyyy">
-								</div>
+								<div class="ocmopt-meta-title"><label class="ocmopt-meta-label t-lspace">កាលបរិច្ឆេទ</label></div>
+								<div class="ocmopt-meta-content input-wrapper inpdate">
+                  <FlatPickr
+                  v-model="startDate"
+                  placeholder="កាលបរិច្ឆេទ"
+                  @input="handleInput"
+                  :value="modelValue"
+                  :config="{
+                    dateFormat: 'd-m-Y',
+                    altInput: true,
+                    altFormat: 'd-m-Y',
+                    allowInput: true,
+                    minDate: new Date()
+                  }"
+                />
+                <div class="prefix pre_end"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="3 2 18 20"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm-8 4H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z" fill="currentColor"></path></svg></div>
+                </div>
 							</div>
 				
 							<div class="ocmopt-meta">
-								<div class="ocmopt-meta-title"><label class="ocmopt-meta-label">អង្គភាពជំនាញ</label></div>
+								<div class="ocmopt-meta-title"><label class="ocmopt-meta-label t-lspace">អង្គភាពជំនាញ</label></div>
 								<div class="ocmopt-meta-content formsel">
-									<select v-model="form.department" id="select-department" placeholder="អង្គភាពជំនាញ" autocomplete="off" class="form-control">
-										<option value="">អង្គភាពជំនាញ</option>
-										<option
-											v-for="dept in departments"
-											:key="dept.value"
-											:value="dept.value"
-										>
-											{{ dept.label }}
-										</option>
-									</select>
+									<InputSelect
+										v-model="form.department"
+										:options="departments"
+										track-by="value"
+										label="label"
+										placeholder="អង្គភាពជំនាញ"
+										:multiple="false"
+										:clear-on-select="false"
+									/>
 								</div>
 							</div>	
 
               <div class="ocmopt-meta">
-								<div class="ocmopt-meta-title"><label class="ocmopt-meta-label">ប្រភេទឯកសារ</label></div>
+								<div class="ocmopt-meta-title"><label class="ocmopt-meta-label t-lspace">ប្រភេទឯកសារ</label></div>
 								<div class="ocmopt-meta-content formsel">
-									<select v-model="form.documentType" id="select-document-type" placeholder="ប្រភេទឯកសារ" autocomplete="off" class="form-control">
-										<option value="">ប្រភេទឯកសារ</option>
-										<option
-											v-for="docType in documentTypes"
-											:key="docType.value"
-											:value="docType.value"
-										>
-											{{ docType.label }}
-										</option>
-									</select>
+									<InputSelect
+										v-model="form.documentType"
+										:options="documentTypes"
+										track-by="value"
+										label="label"
+										placeholder="ប្រភេទឯកសារ"
+										:multiple="false"
+										:clear-on-select="false"
+									/>
 								</div>
 							</div>	
 
-						</div>
-      <!-- <div class="ocmopt-col cols1 mb-15">
-        <div class="ocmopt-meta">
-          <div class="ocmopt-meta-title"><label class="ocmopt-meta-label" for="title">ចំណងជើង</label></div>
-          <div class="ocmopt-meta-content ocm_meta_check">
-            <input id="title" v-model="form.title" type="text" autocomplete="off" required />
-          </div>
-        </div>
-      </div> -->
+              <div class="ocmopt-meta">
+								<div class="ocmopt-meta-title"><label class="ocmopt-meta-label t-lspace">ក្រសួង-ស្ថាប័ន</label></div>
+								<div class="ocmopt-meta-content formsel">
+									<InputSelect
+										v-model="form.ministry"
+										:options="ministries"
+										track-by="value"
+										label="label"
+										placeholder="ក្រសួង-ស្ថាប័ន"
+										:multiple="false"
+										:clear-on-select="false"
+									/>
+								</div>
+							</div>
 
-      <!-- <div class="ocmopt-col cols1 mb-15">
-        <div class="ocmopt-meta">
-          <div class="ocmopt-meta-title"><label class="ocmopt-meta-label" for="description">ខ្លឹមសារ</label></div>
-          <div class="ocmopt-meta-content ocm_meta_check">
-            <textarea id="description" v-model="form.description" cols="60" rows="5" required></textarea>
-          </div>
-        </div>
-      </div> -->
+              <div class="ocmopt-meta">
+								<div class="ocmopt-meta-title"><label class="ocmopt-meta-label t-lspace">ហត្ថលេខា</label></div>
+								<div class="ocmopt-meta-content formsel">
+									<InputSelect
+										v-model="form.signature"
+										:options="leaders"
+										track-by="value"
+										label="name"
+										placeholder="ហត្ថលេខា"
+										:multiple="false"
+										:clear-on-select="false"
+									>
+										<template #singleLabel="{ option }">
+											<div class="ocm_cus_opt">
+												<img v-if="option.img" class="option__image" :src="option.img" />
+												<span>{{ option.name }}</span>
+											</div>
+										</template>
+										
+										<template #option="{ option }">
+											<div class="ocm_cus_opt">
+												<img v-if="option.img" :src="option.img" />
+												<span>{{ option.name }}</span>
+											</div>
+										</template>
+									</InputSelect>
+								</div>
+							</div>	
+              
+
+						</div>      
       
       <div 
         class="drop-zone mb-20"
@@ -108,7 +147,8 @@
       <div class="ocm_card_foot foot_stick">
 					<div class="ocm_btn_wr">
 						<router-link class="button ocm_btn_ac btn_cancel button-primary" to="/pdf/flow"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="2 2 20 20"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17L12 13.41L8.41 17L7 15.59L10.59 12L7 8.41L8.41 7L12 10.59L15.59 7L17 8.41L13.41 12L17 15.59z" fill="currentColor"></path></svg>បោះបង់</router-link>
-            <button class="button ocm_btn_ac button-primary" type="submit" :disabled="isSubmitting"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 32 448 448"><path d="M433.941 129.941l-83.882-83.882A48 48 0 0 0 316.118 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V163.882a48 48 0 0 0-14.059-33.941zM272 80v80H144V80h128zm122 352H54a6 6 0 0 1-6-6V86a6 6 0 0 1 6-6h42v104c0 13.255 10.745 24 24 24h176c13.255 0 24-10.745 24-24V83.882l78.243 78.243a6 6 0 0 1 1.757 4.243V426a6 6 0 0 1-6 6zM224 232c-48.523 0-88 39.477-88 88s39.477 88 88 88s88-39.477 88-88s-39.477-88-88-88zm0 128c-22.056 0-40-17.944-40-40s17.944-40 40-40s40 17.944 40 40s-17.944 40-40 40z" fill="currentColor"></path></svg>រក្សារទុក</button>						
+            <!-- <button class="button ocm_btn_ac button-primary" type="submit" :disabled="isSubmitting"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 32 448 448"><path d="M433.941 129.941l-83.882-83.882A48 48 0 0 0 316.118 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V163.882a48 48 0 0 0-14.059-33.941zM272 80v80H144V80h128zm122 352H54a6 6 0 0 1-6-6V86a6 6 0 0 1 6-6h42v104c0 13.255 10.745 24 24 24h176c13.255 0 24-10.745 24-24V83.882l78.243 78.243a6 6 0 0 1 1.757 4.243V426a6 6 0 0 1-6 6zM224 232c-48.523 0-88 39.477-88 88s39.477 88 88 88s88-39.477 88-88s-39.477-88-88-88zm0 128c-22.056 0-40-17.944-40-40s17.944-40 40-40s40 17.944 40 40s-17.944 40-40 40z" fill="currentColor"></path></svg>រក្សារទុក</button> -->
+            <router-link to="/pdf/documents-success" class="button ocm_btn_ac button-primary" type="submit" :disabled="isSubmitting"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 32 448 448"><path d="M433.941 129.941l-83.882-83.882A48 48 0 0 0 316.118 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V163.882a48 48 0 0 0-14.059-33.941zM272 80v80H144V80h128zm122 352H54a6 6 0 0 1-6-6V86a6 6 0 0 1 6-6h42v104c0 13.255 10.745 24 24 24h176c13.255 0 24-10.745 24-24V83.882l78.243 78.243a6 6 0 0 1 1.757 4.243V426a6 6 0 0 1-6 6zM224 232c-48.523 0-88 39.477-88 88s39.477 88 88 88s88-39.477 88-88s-39.477-88-88-88zm0 128c-22.056 0-40-17.944-40-40s17.944-40 40-40s40 17.944 40 40s-17.944 40-40 40z" fill="currentColor"></path></svg>រក្សារទុក</router-link>
 						</div>
 				</div>
       
@@ -135,9 +175,15 @@
 import Header from '@/components/Header.vue'
 import Aside from '@/components/Aside.vue'
 import Footer from '@/components/Footer.vue'
+import { InputSelect } from '@/components/ui/inputselect'
+import { leaders } from '@/data/leader.js'
+import { FlatPickr } from '@/components/ui/flat-pickr'
 </script>
 <script>
 export default {
+  components: {
+    InputSelect
+  },
   data() {
     return {
       form: {
@@ -147,7 +193,10 @@ export default {
         gallery: [],
         department: "",
         documentType: "",
+        ministry: "",
+        signature: null,
       },
+      leaders: leaders,
       departments: [
         { value: "2", label: "អគ្គនាយកដ្ឋានសម្របសម្រួលកិច្ចការទូទៅ" },
         { value: "3", label: "ក្រុមប្រឹក្សាអ្នកច្បាប់" },
@@ -176,6 +225,70 @@ export default {
         { value: "12", label: "ផែនការសកម្មភាពក្រសួងនានា" },
         { value: "13", label: "អនុក្រឹត្យ.តត" },
         { value: "14", label: "ព្រះរាជក្រឹត្យ.តត" },
+      ],
+      ministries: [
+        { value: "2", label: "ទីស្តីការគណៈរដ្ឋមន្ត្រី" },
+        { value: "3", label: "ក្រសួង មហាផ្ទៃ" },
+        { value: "4", label: "ក្រសួង គមនាគមន៏" },
+        { value: "5", label: "ក្រសួង ពាណិជ្ជកម្ម" },
+        { value: "6", label: "ក្រសួង​ កសិកម្ម​ ​​រុក្ខាប្រមាញ់​និងនេសាទ" },
+        { value: "7", label: "ក្រសួង ព័ត៌មាន" },
+        { value: "8", label: "ក្រសួង អភិវឌ្ឍន៏ជនបទ" },
+        { value: "9", label: "ក្រសួង ទេសចរណ៍" },
+        { value: "10", label: "ក្រសួង ការពារជាតិ" },
+        { value: "11", label: "ក្រសួង បរិស្ថាន" },
+        { value: "12", label: "ក្រសួង អប់រំយុវជន​និងកីឡា" },
+        { value: "13", label: "ក្រសួង ការបរទេស និងសហប្រតិបត្តិការអន្តរជាតិ" },
+        { value: "15", label: "រដ្ឋលេខាធិការដ្ឋានអាកាសចរណ៏ស៊ីវីល" },
+        { value: "16", label: "សមាគម កាកបាទក្រហមកម្ពុជា" },
+        { value: "17", label: "ក្រុមហ៊ុន អគ្គីសនីកម្ពុជា" },
+        { value: "18", label: "គ្រប់​ បណ្តា អង្គការ-សមាគម ស្រុក និងក្រៅប្រទេស" },
+        { value: "19", label: "អាជ្ញាធរជាតិ ទទួលបន្ទុកកិច្ចការ ICT" },
+        { value: "20", label: "អាជ្ញាធរ អប្សារា" },
+        { value: "21", label: "អាជ្ញាធរ មីន" },
+        { value: "22", label: "អាជ្ញាធរ ទេសចរណ៍" },
+        { value: "23", label: "អាជ្ញាធរ សវនកម្មជាតិ" },
+        { value: "24", label: "អាជ្ញាធរជាតិប្រយុទ្ធនឹងជំងឺអេដស៍" },
+        { value: "25", label: "អាជ្ញាធរ ព្រំដែន" },
+        { value: "26", label: "អាជ្ញាធរ ប្រឆាំងគ្រឿងញៀន" },
+        { value: "27", label: "ធនាគារជាតិ កម្ពុជា" },
+        { value: "28", label: "ធនាគារ អភិវឌ្ឍន៍ជនបទ" },
+        { value: "29", label: "រដ្ឋលេខាធិការ មុខងារសាធារណៈ" },
+        { value: "30", label: "រាជបណ្ឌិតសភា កម្ពុជា" },
+        { value: "31", label: "សាលា ភូមិន្ទរដ្ឋបាល" },
+        { value: "32", label: "ស្ថានទូត" },
+        { value: "33", label: "គ្រប់បណ្តា ខេត្ត-ក្រុង នៅទូទាំងប្រទេស" },
+        { value: "34", label: "ក្រសួង សេដ្ឋកិច្ច និងហិរញ្ញវត្ថុ" },
+        { value: "35", label: "ក្រសួង​ វប្បធម៌ និងវិចិត្រសិល្បៈ" },
+        { value: "36", label: "ក្រសួង សុខាភិបាល" },
+        { value: "37", label: "ក្រសួង ឧស្សាហកម្ម រ៉ែ និងថាមពល" },
+        { value: "38", label: "ក្រសួង​ យុត្តិធម៌" },
+        { value: "39", label: "ក្រសួង ការងារ និងបណ្តុះបណ្តាលវិជ្ជាជីវៈ" },
+        { value: "40", label: "ក្រសួង រៀបចំដែនដី នគរូបនីយកម្ម និងសំណង់" },
+        { value: "41", label: "ក្រសួង ទំនាក់ទំនងសភា ព្រឹទ្ធសភា និងអធិការកិច្ច" },
+        { value: "42", label: "ក្រសួង ផែនការ" },
+        { value: "43", label: "ក្រសួង ប្រៃណីយ៍ និងទូរគមនាគមន៍" },
+        { value: "44", label: "ក្រសួង សាធារណៈការ និងដឹកជញ្ជូន" },
+        { value: "45", label: "ក្រសួង ធម្មការ និងសាសនា" },
+        { value: "46", label: "ក្រសួង សង្គមកិច្ច អតីតយុទ្ធជន និងយុវនីតិសម្បទា" },
+        { value: "47", label: "ក្រសួង ធនធានទឹក និងឧតុនិយម" },
+        { value: "48", label: "ក្រសួង កិច្ចការនារី" },
+        { value: "49", label: "ក្រសួង ព្រះបរមរាជវាំង" },
+        { value: "50", label: "គ្រប់បណ្តា ក្រសួង-ស្ថាបន័ ពាក់ព័ន្ធ" },
+        { value: "51", label: "ក្រុមប្រឹក្សាជាតិ ដើម្បីកុមារ" },
+        { value: "52", label: "ក្រុមប្រឹក្សា អភិវឌ្ឍន៍កម្ពុជា" },
+        { value: "53", label: "ក្រុមប្រឹក្សាកំណែរទម្រង់រដ្ឋបាល" },
+        { value: "54", label: "ក្រុមប្រឹក្សា អ្នកច្បាប់" },
+        { value: "55", label: "ក្រុមប្រឹក្សា ស្តារ អភិវឌ្ឍន៍វិស័យកសិកម្ម និងជនបទ" },
+        { value: "56", label: "ក្រុមប្រឹក្សា ធម្មនុញ្ញ" },
+        { value: "57", label: "ក្រុមប្រឹក្សា កំណែទម្រង់ច្បាប់ និងប្រពន័្ធយុត្តិធម៌" },
+        { value: "58", label: "គណៈកម្មការជាតិ គ្រប់គ្រង គ្រោះមហន្តរាយ" },
+        { value: "59", label: "គណៈកម្មការជាតិ ទន្លេមេគង្គ កម្ពុជា" },
+        { value: "60", label: "គណៈកម្មការជាតិ យូណេស្កូ" },
+        { value: "61", label: "គណៈកម្មការ​ រៀបចំបុណ្យជាតិ-អន្តរជាតិ" },
+        { value: "62", label: "គណៈកម្មការ​ សិទ្ធិមនុស្ស កម្ពុជា" },
+        { value: "63", label: "ព្រឹទ្ធសភា" },
+        { value: "64", label: "រដ្ឋសភា​​​​​​​​​​​​ជាតិ" },
       ],
       previewImages: [],
       selectedFiles: [],
@@ -254,7 +367,7 @@ export default {
 .drop-zone {
   width: 100%;
   padding: 20px;
-  background: #c7ddec2b;
+  background: #e5e5e566;
   border: 2px dashed var(--ocm-input-border);
   text-align: center;
   cursor: pointer;
@@ -266,7 +379,7 @@ export default {
   font-size: 15px;
 }
 .drop-zone:hover{
-  background: #88c6f02b;
+  background: #e5e5e566;
 }
 .drop-zone svg{
   width: 50px;

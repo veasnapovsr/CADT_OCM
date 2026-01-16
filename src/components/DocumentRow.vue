@@ -45,7 +45,7 @@
 
     <!-- SENT TO + TIME AGO -->
     <td>
-      ឯកសារដល់: {{ sentAgo }}<br />
+      {{ sentAgo }} ឯកសារដល់:<br />
       <span class="bold">{{ doc.sentTo }}</span><br />
       <small class="fs-95 text-muted">        
       </small>
@@ -154,7 +154,7 @@ const statusMap = {
     class: 'acdecl'
   },
   draft: {
-    text: 'ព្រាង',
+    text: 'ឯកសារព្រាង',
     class: 'acdraft'
   }
 }

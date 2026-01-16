@@ -1,13 +1,13 @@
 <template>
-  <div class=" h-full">
-
+  <div class=" h-full" style=" justify-content: space-between; display: flex; flex-direction: column; ">
+    <div class="timeline_top">
     <!-- TITLE -->
-    <h3 class="text-lg font-khmer font-bold mb-10">
+    <h3 class="text-lg font-khmer font-bold mb-10 t-lspace">
       ស្ថានភាពដំណើរការឯកសារ
     </h3>
 
     <!-- TIMELINE -->
-    <div class="space-y-6">
+    <div class="space-y-6" style=" display: flex; flex-direction: column; gap: 12px; ">
 
       <div
         v-for="(step, index) in steps"
@@ -70,7 +70,7 @@
         <div class="flex-1">
           <div class="flex justify-between items-start">
             <div>
-              <p class="font-semibold" :class="textClass(index)">
+              <p class="font-semibold t-lspace" :class="textClass(index)">
                 {{ step.title }}
               </p>
               <p class="text-sm text-gray-500">
@@ -91,7 +91,6 @@
             {{ step.time }}
           </span>
 
-          <!-- COMMENT BOX (ONLY WHEN CLICKED) -->
           <div
             v-if="replyingIndex === index"
             class="mt-4"
@@ -105,10 +104,10 @@
 
             <div class="text-right mt-3">
               <button
-                class="inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm"
+                class="inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-sm text-sm"
                 @click="sendComment(index)"
               >
-                ➤ បញ្ជូនមតិយោបល់
+              បញ្ជូនទៅវិញ
               </button>
             </div>
           </div>
@@ -117,13 +116,38 @@
       </div>
 
     </div>
-    <!-- SEND DOCUMENT -->
-<div class="mt-10">
+  </div>
+
+
+    <div class="mt-10">
+    <div            
+            class="mt-4"
+          >
+            <textarea
+              v-model="comment"
+              rows="3"
+              placeholder="បញ្ចូលមតិយោបល់..."
+              class="w-full rounded-sm border p-3 text-sm focus:ring-2 focus:ring-blue-500"
+            />
+
+            <div class="text-right mt-3">              
+              <button style="    background: var(--ocm-btn-bg);"
+                class="inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-sm text-sm"
+                @click="sendComment(index)"
+              >              
+                បញ្ជូនមតិយោបល់
+              </button>
+            </div>
+          </div>
+</div>
+
+
+    <div class="mt-10" style="display: none;">
 
   <!-- TITLE -->
-  <h4 class="font-khmer font-semibold mb-10">
+  <h3 class="font-khmer font-semibold t-lspace mb-10">
     បញ្ជូនឯកសារឱ្យ
-  </h4>
+  </h3>
 
  <!-- SEARCH + FILTER -->
 <div class="flex gap-4 mb-10">
@@ -137,9 +161,7 @@
              focus:border-blue-400 focus:ring-1 focus:ring-blue-400"
     />
   </div>
-
-  <!-- FILTER (SHORTER, MATCHING BORDER) -->
-  <div class="flex-[1]">
+  <div class="flex-[1]" style="display: none;">
    <select
   v-model="filter"
   class="w-full rounded-lg border border-gray-200
@@ -154,7 +176,6 @@
   <option value="department">department1</option>
   <option value="officer">department2</option>
 </select>
-
 
   </div>
 </div>
@@ -182,10 +203,10 @@
 
       <!-- SEND BUTTON -->
       <button
-        class="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm"
+        class="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm" style=" background: var(--ocm-btn-bg); "
         @click="sendTo(person)"
       >
-        ➤ បញ្ជូនឯកសារ
+      បញ្ជូនឯកសារ
       </button>
     </div>
   </div>
@@ -224,13 +245,13 @@ const steps = [
     id: 3,
     title: 'អង្គភាពជំនាញ',
     subtitle: 'កំពុងរង់ចាំ',
-    time: '—'
+    time: 'កាលបរិច្ឆេទ'
   },
   {
     id: 4,
     title: 'លើកកំណត់បង្ហាញ',
     subtitle: 'កំពុងរង់ចាំ',
-    time: '—'
+    time: 'កាលបរិច្ឆេទ'
   }
 ]
 

@@ -107,11 +107,11 @@ const filteredDocuments = computed(() => {
             />
 
             <AuthorNameFilter
-              @change="selectedAuthor = $event"
+              v-model="selectedAuthor"
             />
 
             <DocumentStatusFilter
-              @change="selectedStatus = $event"
+              v-model="selectedStatus"
             />
 
             <!-- SEARCH BUTTON -->

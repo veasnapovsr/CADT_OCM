@@ -1,86 +1,116 @@
 <script setup>
-import { ref, nextTick } from 'vue'
-
-import { Button } from '@/components/ui/button'
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover'
-import {
-  Command,
-  CommandInput,
-  CommandList,
-  CommandItem,
-  CommandEmpty,
-  CommandGroup,
-} from '@/components/ui/command'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 
 const open = ref(false)
 const value = ref('')
+const searchQuery = ref('')
+const dropdownRef = ref(null)
+const buttonRef = ref(null)
 
-function onSelect(payload) {
-  const val =
-    typeof payload === 'string'
-      ? payload
-      : (payload?.detail?.value ?? payload?.target?.value ?? '')
+const options = [
+  { value: 'report', label: 'Report' },
+  { value: 'letter', label: 'Letter' },
+  { value: 'memo', label: 'Memo' }
+]
 
-  value.value = val
+const filteredOptions = computed(() => {
+  if (!searchQuery.value) return options
+  const query = searchQuery.value.toLowerCase()
+  return options.filter(opt => opt.label.toLowerCase().includes(query))
+})
 
-  nextTick(() => {
-    open.value = false
-  })
+function onSelect(selectedValue) {
+  value.value = selectedValue
+  open.value = false
+  searchQuery.value = ''
 }
+
+function toggleOpen() {
+  open.value = !open.value
+}
+
+function getDisplayText() {
+  const option = options.find(opt => opt.value === value.value)
+  return option ? option.label : 'Select document type'
+}
+
+function handleClickOutside(event) {
+  if (
+    open.value &&
+    dropdownRef.value &&
+    buttonRef.value &&
+    !dropdownRef.value.contains(event.target) &&
+    !buttonRef.value.contains(event.target)
+  ) {
+    open.value = false
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
 </script>
 
 <template>
-  <Popover v-model:open="open">
-    <PopoverTrigger as-child>
-      <Button
-        variant="outline"
-        role="combobox"
-        :aria-expanded="open"
-        class="w-[260px] justify-between text-left"
-      >
-        <span class="truncate">
-          {{
-            value === 'report' ? 'Report'
-            : value === 'letter' ? 'Letter'
-            : value === 'memo' ? 'Memo'
-            : 'Select document type'
-          }}
-        </span>
-      </Button>
-    </PopoverTrigger>
-
-    <PopoverContent
-      forceMount
-      :teleport="true"
-      align="start"
-      class="z-[9999] w-[260px] p-0 rounded-xl border bg-white shadow-md"
+  <div class="relative w-[260px]">
+    <button
+      ref="buttonRef"
+      type="button"
+      role="combobox"
+      :aria-expanded="open"
+      @click="toggleOpen"
+      class="w-full h-9 px-3 py-2 text-sm border border-input bg-background rounded-md shadow-sm hover:bg-accent hover:text-accent-foreground flex items-center justify-between text-left"
     >
-      <Command>
-        <CommandInput
-          placeholder="Search document type…"
-          class="[&>svg]:hidden [&>input]:h-9 [&>input]:px-3 [&>input]:text-sm"
+      <span class="truncate">{{ getDisplayText() }}</span>
+      <svg
+        class="h-4 w-4 opacity-50 shrink-0"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 9l-7 7-7-7"
         />
+      </svg>
+    </button>
 
-        <CommandList class="max-h-60 overflow-y-auto">
-          <CommandEmpty class="px-4 py-2 text-sm text-gray-500">
-            No result found
-          </CommandEmpty>
+    <div
+      v-if="open"
+      ref="dropdownRef"
+      class="absolute z-[9999] w-[260px] mt-1 rounded-xl border bg-white shadow-md overflow-hidden"
+    >
+      <div class="p-2 border-b">
+        <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="Search document type…"
+          class="w-full h-9 px-3 text-sm border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+        />
+      </div>
 
-          <CommandGroup>
-            <CommandItem value="report" @select="onSelect" class="px-4 py-2 text-sm cursor-pointer">
-              Report
-            </CommandItem>
-
-            <CommandItem value="letter" @select="onSelect" class="px-4 py-2 text-sm cursor-pointer">
-              Letter
-            </CommandItem>
-
-            <CommandItem value="memo" @select="onSelect" class="px-4 py-2 text-sm cursor-pointer">
-              Memo
-            </CommandItem>
-          </CommandGroup>
-        </CommandList>
-      </Command>
-    </PopoverContent>
-  </Popover>
+      <ul class="max-h-60 overflow-y-auto">
+        <li
+          v-if="filteredOptions.length === 0"
+          class="px-4 py-2 text-sm text-gray-500"
+        >
+          No result found
+        </li>
+        <li
+          v-for="option in filteredOptions"
+          :key="option.value"
+          @click="onSelect(option.value)"
+          class="px-4 py-2 text-sm cursor-pointer hover:bg-accent hover:text-accent-foreground"
+        >
+          {{ option.label }}
+        </li>
+      </ul>
+    </div>
+  </div>
 </template>

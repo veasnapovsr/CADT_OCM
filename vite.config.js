@@ -14,4 +14,27 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+  optimizeDeps: {
+    include: [
+      '@embedpdf/core',
+      '@embedpdf/core/vue',
+      '@embedpdf/engines',
+      '@embedpdf/engines/vue',
+      '@embedpdf/plugin-document-manager',
+      '@embedpdf/plugin-document-manager/vue',
+      '@embedpdf/plugin-viewport',
+      '@embedpdf/plugin-viewport/vue',
+      '@embedpdf/plugin-scroll',
+      '@embedpdf/plugin-scroll/vue',
+      '@embedpdf/plugin-render',
+      '@embedpdf/plugin-render/vue',
+      '@embedpdf/plugin-zoom',
+      '@embedpdf/plugin-zoom/vue'
+    ]
+  },
+  server: {
+    fs: {
+      allow: ['..']
+    }
+  }
 })

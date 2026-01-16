@@ -1,6 +1,6 @@
 <template>
   <!-- TOP HEADER -->
-  <Header />
+  <Header title="លំហូរឯកសារទីស្តីការគណៈរដ្ឋមន្ត្រី" />
 
   <section class="appppw">
     <div class="flex h-[calc(100vh-64px)] overflow-hidden">
@@ -12,23 +12,28 @@
         <div class="app_content flex flex-col flex-1 overflow-hidden">
 
           <!-- PAGE TITLE -->
-          <div class="ocm_cwr ">
-            <h2 class="h wttt t-lspace font-khmer font-bold text-blue-600">ផែនការសកម្មភាព ២០២៤-២០២៨ ដើម្បីអនុវត្ដវិធានការគន្លឹះក្នុងការកែទម្រង់រដ្ឋបាលសាធារណៈ</h2>
-          </div>
+          
           
           <!-- PDF + TOOLS -->
-          <div class="flex flex-1 overflow-hidden">
+          <div class="flex flex-1 overflow-hidden doc_details">
             <!-- LEFT : PDF -->
             <div class="flex-1 overflow-hidden">
+              <div class="ocm_cwr ">
+            <h2 class="h doc-heading t-lspace">សេចក្តីណែនាំ ស្តីពី របៀបរបបនៃការរៀបចំកំណត់បង្ហាញរបស់ទីស្តីការគណៈរដ្ឋមន្ត្រី លើសំណើនិងរបាយការណ៍របស់ក្រសួង ស្ថាប័ន</h2>
+          </div>
               <PdfViewer
-                src="/public/docs/reportMenu.pdf"
-                class="w-full h-full"
+                src="/docs/report2.pdf"
+                class="doc_preview"
               />
+              <!-- <PdfViewer
+                src="https://snippet.embedpdf.com/ebook.pdf"
+                class="w-full h-full"
+              /> -->
             </div>
 
             <!-- RIGHT : WORKFLOW / TIMELINE -->
             <div
-              class="w-[360px]   overflow-y-auto  p-4"
+              class="w-[360px] overflow-y-auto doc_sidebar"
             >
               <DocumentTimeline />
             </div>

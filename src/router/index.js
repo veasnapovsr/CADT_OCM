@@ -18,6 +18,7 @@ import FlowDashboard from '../views/pdf/FlowDashboard.vue'
 import MyDocuments from '../views/pdf/MyDocuments.vue'
 import DocumentAdd from '../views/pdf/DocumentAdd.vue'
 import DocumentEdit from '../views/pdf/DocumentEdit.vue'
+import DocumentSuccess from '../views/pdf/DocumentSuccess.vue'
 import DocumentDetail from '../views/pdf/DocumentDetail.vue'
 import History from '../views/pdf/History.vue'
 import SystemLogs from '../views/pdf/SystemLogs.vue'
@@ -108,6 +109,11 @@ const routes = [
         path: 'documents-edit',
         name: 'pdf-documents-edit',
         component: DocumentEdit
+      },
+      {
+        path: 'documents-success',
+        name: 'pdf-documents-success',
+        component: DocumentSuccess
       },      
       {
         path: 'documents-detail',

@@ -10,7 +10,7 @@
       </h2>
 
       <!-- Email -->
-      <div class="input-wrapper">
+      <div class="input-wrapper mb-15">
         <input
           id="user_login"
           class="input form-control"
@@ -27,7 +27,7 @@
       </div>
 
       <!-- Password -->
-      <div class="input-wrapper">
+      <div class="input-wrapper mb-15">
         <input
           id="user_pass"
           class="input password-input form-control"

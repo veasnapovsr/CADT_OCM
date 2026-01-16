@@ -1,26 +1,22 @@
 <template>
   <div class="items">
-    <select
-      :value="modelValue"
-      @change="$emit('update:modelValue', $event.target.value)"
+    <InputSelect
+      :model-value="modelValue"
+      :options="statuses"
+      track-by="value"
+      label="label"
       :placeholder="placeholder"
-      autocomplete="off"
-      class="form-control"
-    >
-      <option value="">{{ placeholder }}</option>
-      <option
-        v-for="status in statuses"
-        :key="status.value"
-        :value="status.value"
-      >
-        {{ status.label }}
-      </option>
-    </select>
+      :multiple="false"
+      :clear-on-select="false"
+      @update:model-value="handleUpdate"
+    />
   </div>
 </template>
 
 <script setup>
-defineProps({
+import { InputSelect } from '@/components/ui/inputselect'
+
+const props = defineProps({
   modelValue: {
     type: String,
     default: ''
@@ -39,5 +35,10 @@ defineProps({
   }
 })
 
-defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue'])
+
+function handleUpdate(value) {
+  // InputSelect already extracts the value, but ensure we emit it correctly
+  emit('update:modelValue', value)
+}
 </script>
