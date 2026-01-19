@@ -1,8 +1,10 @@
 <template>
-  <div class="items">
+  <div class="items ocm-tooltip">
+    <span class="tip_txt">ស្វែងរកតាម ឯកសារបញ្ជូនដល់</span>
+
     <InputSelect
-      :model-value="modelValue"
-      :options="statuses"
+      :model-value="modelValue || 'all'"
+      :options="options"
       track-by="value"
       label="label"
       :placeholder="placeholder"
@@ -23,23 +25,18 @@ const props = defineProps({
   },
   placeholder: {
     type: String,
-    default: 'ស្ថានភាព'
+    default: 'ឯកសារបញ្ជូនដល់'
   },
-  statuses: {
+  options: {
     type: Array,
-    default: () => [
-      { value: 'all', label: 'ទាំងអស់' },
-      { value: 'approved', label: 'អនុម័តរួច' },
-      { value: 'pending', label: 'មិនទាន់អនុម័ត' },
-      { value: 'rejected', label: 'មិនយល់ព្រម' }
-    ]
+    required: true
   }
 })
 
 const emit = defineEmits(['update:modelValue'])
 
 function handleUpdate(value) {
-  // InputSelect already extracts the value, but ensure we emit it correctly
+  // normalize "all" → empty string
   emit('update:modelValue', value === 'all' ? '' : value)
 }
 </script>
