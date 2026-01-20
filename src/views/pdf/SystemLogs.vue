@@ -113,73 +113,68 @@
         </button>
       </div>
 
-      <!-- Logs Table -->
-      
-
-          <div class="ocm_tb_wrap mb-10 shadow-right">
-            <table class="wp-list-table widefat striped">
-              <thead>
-                <tr>
-                  <th style="width: 50px;">#</th>
-                  <th style="width: 200px;">អ្នកពិនិត្រ</th>
-                  <th style="width: 400px;">ឯកសារ</th>
-                  <th style="width: 180px;">កាលបរិច្ឆេទ</th>
-                  <th>សកម្មភាព</th>
-                  <th style="width: 150px;">ស្ថានភាព</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-if="filteredLogs.length === 0">
-                  <td colspan="6" class="ocm_dt_empt">
-                    <div class="ocm_dti">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                    </div>
-                    <div>មិនមាន Logs</div>
-                  </td>
-                </tr>
-                <tr v-for="(log, index) in paginatedLogs" :key="log.id">
-                  <td>{{ formatKhmerNumber((currentPage - 1) * itemsPerPage + index + 1) }}</td>
-                  <td>
-                    <span class="jl_tbl_w jl_mins">
-                      <span class="jl_tbl_img">
-                        <img :src="log.userAvatar || 'https://ui-avatars.com/api/?name=' + log.userName" :alt="log.userName" />
-                      </span>
-                      <span class="jl_tbl_c">
-                        <span class="tb_n1 bold fs-95">{{ log.userName }}</span>
-                        <span class="tb_n1 fs-90" v-html="log.userSubtitle"></span>
-                      </span>
-                    </span>
-                  </td>
-                  <td>
-                    <span class="jl_tbl_c gap-0.5 cursor-pointer" @click="goToDocumentDetail(log)">
-                      <span class="tb_n1 link bold ellip-2" :title="log.documentDescription">
-                        {{ log.documentDescription }}
-                      </span>
-                      <span class="tb_n1 fs-90">
-                        <span>លិខិតលេខ: {{ log.documentReference }}</span>
-                      </span>
-                    </span>
-                  </td>
-                  <td>
-                    {{ formatKhmerDate(log.timestamp) }}
-                  </td>
-                  <td>
-                    <span class="ellip-2" :class="{ 'bold': log.actionType === 'comment' }">
-                      {{ log.description }}
-                      <span class="log_time">{{ formatTime(log.timestamp) }}</span>
-                    </span>
-                  </td>
-                  <td>
-                    <span class="ocm_status" :class="getActionBadgeClass(log.actionType)">
-                      {{ getActionLabel(log.actionType) }}
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+      <!-- Logs Timeline -->
+      <div class="timeline_wrap">
+        <div v-if="filteredLogs.length === 0" class="ocm_dt_empt timeline_empty">
+          <div class="ocm_dti">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
           </div>
+          <div>មិនមាន Logs</div>
+        </div>
+
+        <div v-else class="timeline_list">
+          <div
+            class="timeline_item"
+            v-for="(log, index) in paginatedLogs"
+            :key="log.id"
+          >
+            <div class="timeline_left">
+              <div class="timeline_time">{{ formatTime(log.timestamp) }}</div>
+              <div class="timeline_dot" :class="getActionBadgeClass(log.actionType)"></div>
+              <div
+                class="timeline_line"
+                v-if="index !== paginatedLogs.length - 1"
+              ></div>
+            </div>
+
+            <div class="timeline_body">
+              <div class="timeline_meta">
+                <span class="ocm_status" :class="getActionBadgeClass(log.actionType)">
+                  {{ getActionLabel(log.actionType) }}
+                </span>
+                <span class="timeline_date">{{ formatKhmerDate(log.timestamp) }}</span>
+                <span class="timeline_counter">
+                  {{ formatKhmerNumber((currentPage - 1) * itemsPerPage + index + 1) }}
+                </span>
+              </div>
+
+              <div class="timeline_user">
+                <span class="jl_tbl_img">
+                  <img :src="log.userAvatar || 'https://ui-avatars.com/api/?name=' + log.userName" :alt="log.userName" />
+                </span>
+                <div class="jl_tbl_c">
+                  <span class="tb_n1 bold fs-95">{{ log.userName }}</span>
+                  <span class="tb_n1 fs-90" v-html="log.userSubtitle"></span>
+                </div>
+              </div>
+
+              <div class="timeline_doc cursor-pointer" @click="goToDocumentDetail(log)">
+                <div class="doc_title">{{ log.documentDescription }}</div>
+                <div class="doc_ref">លិខិតលេខ: {{ log.documentReference }}</div>
+              </div>
+
+              <div v-if="log.actionType === 'comment'" class="timeline_comment_box">
+                {{ log.description }}
+              </div>
+              <div v-else class="timeline_action_line">
+                {{ log.description }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
         </div>
         <!-- Pagination -->
@@ -571,6 +566,169 @@ onMounted(() => {
   font-weight: bold;
   color: #2563eb; /* blue-600 */
   margin-left: 4px;
+}
+
+/* Timeline */
+.timeline_wrap {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.04);
+  margin-bottom: 12px;
+}
+
+.timeline_list {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.timeline_item {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 12px;
+  position: relative;
+}
+
+.timeline_left {
+  position: relative;
+  text-align: right;
+  padding-right: 28px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.timeline_time {
+  font-size: 14px;
+  color: #1f2937;
+}
+
+.timeline_dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  position: absolute;
+  right: 5px;
+  top: 6px;
+  background: #d1d5db;
+  box-shadow: 0 0 0 4px #f3f4f6;
+}
+
+.timeline_line {
+  position: absolute;
+  right: 11px;
+  top: 24px;
+  width: 2px;
+  height: calc(100% - 20px);
+  background: linear-gradient(to bottom, #e5e7eb 0%, #d1d5db 100%);
+}
+
+.timeline_body {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.timeline_meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-weight: 600;
+}
+
+.timeline_date {
+  color: #6b7280;
+}
+
+.timeline_counter {
+  margin-left: auto;
+  color: #9ca3af;
+}
+
+.timeline_user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.timeline_user .jl_tbl_img img {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.timeline_doc {
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.timeline_doc .doc_title {
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.timeline_doc .doc_ref {
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.timeline_comment_box {
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  padding: 12px;
+  color: #111827;
+  line-height: 1.5;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.timeline_action_line {
+  color: #111827;
+  font-weight: 600;
+}
+
+.timeline_empty {
+  border: 1px dashed #e5e7eb;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+/* Use action classes for dot color */
+.timeline_dot.status-comment { background: #6b7280; }
+.timeline_dot.status-reject { background: #ef4444; }
+.timeline_dot.status-approve { background: #10b981; }
+.timeline_dot.status-sent { background: #0ea5e9; }
+.timeline_dot.status-created { background: #3b82f6; }
+
+@media (max-width: 768px) {
+  .timeline_item {
+    grid-template-columns: 1fr;
+  }
+  .timeline_left {
+    text-align: left;
+    padding-right: 0;
+    padding-left: 24px;
+  }
+  .timeline_dot {
+    right: auto;
+    left: 0;
+  }
+  .timeline_line {
+    right: auto;
+    left: 6px;
+  }
 }
 
 </style>
