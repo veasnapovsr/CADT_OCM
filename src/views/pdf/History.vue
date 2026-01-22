@@ -46,6 +46,7 @@
           />
         </div>
         <button @click="applyFilters" class="button ocm_btn_ac button-primary t-lspace">
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="85.36 85.33 815.27 815.3"> <g id="icomoon-ignore"> </g> <path d="M447.998 85.331c-57.831 0.005-114.822 13.839-166.219 40.349s-95.708 64.927-129.238 112.046c-33.53 47.118-55.306 101.572-63.511 158.818s-2.601 115.625 16.345 170.26c18.945 54.641 50.682 103.956 92.563 143.836s92.692 69.166 148.193 85.417c55.501 16.246 114.083 18.985 170.86 7.992 56.776-10.998 110.095-35.415 155.52-71.209l155.817 155.817c8.049 7.772 18.826 12.073 30.013 11.976s21.888-4.582 29.798-12.493c7.91-7.91 12.396-18.611 12.493-29.798s-4.204-21.965-11.976-30.013l-155.817-155.817c42.153-53.478 68.403-117.745 75.74-185.443 7.332-67.698-4.536-136.094-34.258-197.36s-76.088-112.927-133.801-149.071c-57.708-36.144-124.431-55.31-192.524-55.306zM170.665 447.998c0-73.553 29.219-144.094 81.229-196.104s122.551-81.229 196.104-81.229c73.555 0 144.094 29.219 196.103 81.229 52.014 52.010 81.229 122.551 81.229 196.104 0 73.551-29.215 144.094-81.229 196.103-52.009 52.009-122.547 81.229-196.103 81.229-73.553 0-144.094-29.22-196.104-81.229s-81.229-122.552-81.229-196.103z"></path> </svg>
           ស្វែងរក
         </button>
       </div>
@@ -178,9 +179,10 @@
             ចំនួន Logs៖ {{ formatKhmerNumber(filteredLogs.length) }}
           </span>
         </div>
+        <Footer />
       </div>
   
-  <Footer />
+  
 </section>
 </template>
 
@@ -476,9 +478,9 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   padding: 4px 12px;
-  border-radius: 12px;
+  border-radius: 20px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   white-space: nowrap;
 }
 
@@ -488,8 +490,8 @@ onMounted(() => {
 }
 
 .ocm_status.status-reject {
-  background-color: #ef4444;
-  color: white;
+  background-color: #ff686e;
+    color: #fff;
 }
 
 .ocm_status.status-comment {
@@ -537,8 +539,8 @@ onMounted(() => {
 
 /* Timeline */
 .timeline_wrap {
-  /* background: white; */
-  border-radius: 12px;
+  background: white;
+  border-radius: 6px;
   padding: 16px;
   box-shadow: 0 12px 30px rgba(15, 23, 42, 0.04);
   margin-bottom: 12px;
@@ -595,7 +597,7 @@ onMounted(() => {
 
 .timeline_body {
   border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  border-radius: 6px;
   padding: 14px 16px;
   display: flex;
   flex-direction: column;
@@ -617,6 +619,7 @@ onMounted(() => {
 .timeline_counter {
   margin-left: auto;
   color: #9ca3af;
+  font-weight: 500;
 }
 
 .timeline_user {
@@ -632,17 +635,9 @@ onMounted(() => {
   object-fit: cover;
 }
 
-.timeline_doc {
-  background: #eef2ff;
-  border: 1px solid #c7d2fe;
-  border-radius: 10px;
-  padding: 10px 12px;
-}
-
-
 .timeline_doc .doc_title {
-  font-weight: 700;
-  color: #0031c3;
+  font-weight: 500;
+  font-size: 15px;
    display: -webkit-box;
   -webkit-line-clamp: 2;       /* MAX 2 lines */
   -webkit-box-orient: vertical;
@@ -661,15 +656,15 @@ onMounted(() => {
 .timeline_comment_box {
   background: #fff;
   border: 1px solid #d1d5db;
-  border-radius: 10px;
-  padding: 12px;
+  border-radius: 6px;
+  padding: 10px;
   color: #111827;
   line-height: 1.5;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .timeline_action_line {
-  font-weight: 600;
+  font-size: 15px;
 }
 
 .timeline_empty {

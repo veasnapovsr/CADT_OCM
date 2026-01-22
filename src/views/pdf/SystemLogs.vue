@@ -3,9 +3,11 @@
   <section class="appppw">
     <Aside />
     <div class="sw">
-      <div class="flex flex-col gap-4">
+      <div class="flex flex-col">
 
-        <h1 class="text-2xl">បណ្ណសារឯកសារ</h1>
+        <div class="ocm_cwr flex items-center justify-between">
+          <h2 class="h wttt t-lspace">Logs ប្រព័ន្ធគ្រប់គ្រង</h2>
+        </div>      
 
         <CountNumber />
 
@@ -17,161 +19,49 @@
         <!-- <DocumentTable /> -->
 
       </div>
-<<<<<<< HEAD
+
+      <!-- Most Active Users: Top 10 -->
+      <div class="ocm_cwr mb-8">
+        <h3 class="h wttt t-lspace mb-4">អ្នកប្រើប្រាស់សកម្មបំផុតចំណាត់ថ្នាក់កំពូលទាំង ១០</h3>
+      </div>
+
+      <div class="ocm_tb_wrap shadow-right mb-30" style="width: 100%;">
+        <table class="wp-list-table widefat striped" style="width: 100%;">
+          <thead>
+            <tr>
+              <th class="t-lspace" style="width: 40px;">#</th>
+              <th class="t-lspace" style="width: 60px;">រូបភាព</th>
+              <th class="t-lspace">ឈ្មោះ</th>
+              <th class="t-lspace" style="width: 80px;">ចំនួន</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(user, idx) in topActiveUsers" :key="user.name">
+              <td>{{ idx + 1 }}</td>
+              <td>
+                <span class="jl_tbl_img">
+                  <img :src="user.img || 'https://ui-avatars.com/api/?name=' + user.name" :alt="user.name" style="width:32px;height:32px;border-radius:50%;" />
+                </span>
+              </td>
+              <td>
+                <span class="jl_tbl_c">
+                  <span class="tb_n1 bold fs-95">{{ user.name }}</span>
+                  <span class="tb_n1 fs-90">អនុរដ្ឋលេខាធិការ</span>
+                </span>
+              </td>
+              <td><span class="fw-bold">{{ user.count }}</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <Footer />
     </div>
   </section>
-=======
- 
-      <!-- Logs Timeline -->
-      <!-- Most Active Users: Top 10 -->
-      <div class="ocm_cwr mb-8">
-        <h3 class="h wttt t-lspace mb-4">អ្នកប្រើប្រាស់សកម្មបំផុត៖ ចំណាត់ថ្នាក់កំពូលទាំង ១០</h3>
-      
-      </div>
-       <div class="ocm_tb_wrap shadow-right" style="width: 100%;">
-          <table class="wp-list-table widefat striped" style="width: 100%;">
-            <thead>
-              <tr>
-                <th class="t-lspace" style="width: 40px;">#</th>
-                <th class="t-lspace" style="width: 60px;">Avatar</th>
-                <th class="t-lspace">Name</th>
-                <th class="t-lspace" style="width: 80px;">Count</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(user, idx) in topActiveUsers" :key="user.name">
-                <td>{{ idx + 1 }}</td>
-                <td>
-                  <span class="jl_tbl_img">
-                    <img :src="user.img || 'https://ui-avatars.com/api/?name=' + user.name" :alt="user.name" style="width:32px;height:32px;border-radius:50%;" />
-                  </span>
-                </td>
-                <td>
-                  <span class="jl_tbl_c">
-                    <span class="tb_n1 bold fs-95">{{ user.name }}</span>
-                    <span class="tb_n1 fs-90">អនុរដ្ឋលេខាធិការ</span>
-                  </span>
-                </td>
-                <td>
-                  <span class="fw-bold">{{ user.count }}</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-      
-      <!-- Timeline of Logs -->
-
-      <div class="timeline_wrap">
-        <div v-if="filteredLogs.length === 0" class="ocm_dt_empt timeline_empty">
-          <div class="ocm_dti">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-          </div>
-          <div>មិនមាន Logs</div>
-        </div>
-
-        <div v-else class="timeline_list">
-          <div
-            class="timeline_item"
-            v-for="(log, index) in paginatedLogs"
-            :key="log.id"
-          >
-            <div class="timeline_left">
-              <div class="timeline_time">{{ formatTime(log.timestamp) }}</div>
-              <div class="timeline_dot" :class="getActionBadgeClass(log.actionType)"></div>
-              <div
-                class="timeline_line"
-                v-if="index !== paginatedLogs.length - 1"
-              ></div>
-            </div>
-
-            <div class="timeline_body">
-              <div class="timeline_meta">
-                <span class="ocm_status" :class="getActionBadgeClass(log.actionType)">
-                  {{ getActionLabel(log.actionType) }}
-                </span>
-                <span class="timeline_date">{{ formatKhmerDate(log.timestamp) }}</span>
-                <span class="timeline_counter">
-                  {{ formatKhmerNumber((currentPage - 1) * itemsPerPage + index + 1) }}
-                </span>
-              </div>
-
-              <div class="timeline_user">
-                <span class="jl_tbl_img">
-                  <img :src="log.userAvatar || 'https://ui-avatars.com/api/?name=' + log.userName" :alt="log.userName" />
-                </span>
-                <div class="jl_tbl_c">
-                  <span class="tb_n1 bold fs-95">{{ log.userName }}</span>
-                  <span class="tb_n1 fs-90" v-html="log.userSubtitle"></span>
-                </div>
-              </div>
-
-              <div class="timeline_doc cursor-pointer" @click="goToDocumentDetail(log)">
-                <div class="doc_title">{{ log.documentDescription }}</div>
-                <div class="doc_ref">លិខិតលេខ: {{ log.documentReference }}</div>
-              </div>
-
-              <div v-if="log.actionType === 'comment'" class="timeline_comment_box">
-                {{ log.description }}
-              </div>
-              <div v-else class="timeline_action_line">
-                {{ log.description }}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-        </div>
-        <!-- Pagination -->
-        <div class="pagination_w logs_pagination_bar" v-if="totalPages > 1">
-          <div class="pagination">
-            <button
-              v-for="page in totalPages"
-              :key="page"
-              @click="currentPage = page"
-              :class="['nav_i', 'page', { current: currentPage === page }]"
-            >
-              {{ formatKhmerNumber(page) }}
-            </button>
-            <button
-              class="next nav_i"
-              :disabled="currentPage === totalPages"
-              @click="currentPage < totalPages && (currentPage = currentPage + 1)"
-            >
-              បន្ទាប់
-              <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 37.65 448.05 436.7"><path d="M190.5 66.9l22.2-22.2c9.4-9.4 24.6-9.4 33.9 0L441 239c9.4 9.4 9.4 24.6 0 33.9L246.6 467.3c-9.4 9.4-24.6 9.4-33.9 0l-22.2-22.2c-9.5-9.5-9.3-25 .4-34.3L311.4 296H24c-13.3 0-24-10.7-24-24v-32c0-13.3 10.7-24 24-24h287.4L190.9 101.2c-9.8-9.3-10-24.8-.4-34.3z" fill="currentColor"></path></svg>
-            </button>
-          </div>
-          <span class="ocm_count t-lspace">
-            ចំនួន Logs៖ {{ formatKhmerNumber(filteredLogs.length) }}
-          </span>
-        </div>
-      </div>
-  
-  <Footer />
-</section>
->>>>>>> 98e1ab3 (Top10_USers_SystemLogs.vue)
 </template>
 
 
 <script setup>
-<<<<<<< HEAD
-import Header from '@/components/Header.vue'
-import Aside from '@/components/Aside.vue'
-import Footer from '@/components/Footer.vue'
-import FolderCompo from '@/components/History/FolderCompo.vue';
-import DocumentTable from '@/components/History/DocumentTable.vue';
-import CountNumber from '@/components/CountNumber.vue';
-import LogActivityLineChart from '@/components/LogActivityLineChart.vue'
-</script>
-=======
-
 ///To compute the top 10 Users
 import { ref, computed, onMounted } from 'vue'
 
@@ -179,6 +69,8 @@ import { useRouter } from 'vue-router'
 import Header from '@/components/Header.vue'
 import Aside from '@/components/Aside.vue'
 import Footer from '@/components/Footer.vue'
+import CountNumber from '@/components/CountNumber.vue'
+import LogActivityLineChart from '@/components/LogActivityLineChart.vue'
 import { formatKhmerNumber } from '@/lib/utils.js'
 import { leaders } from '@/data/leader.js'
 import { documents } from '@/data/documents'
@@ -714,4 +606,3 @@ const topActiveUsers = computed(() => {
 }
 
 </style>
->>>>>>> 98e1ab3 (Top10_USers_SystemLogs.vue)

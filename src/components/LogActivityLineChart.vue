@@ -45,7 +45,7 @@ const viewData = [
 const chartData = {
   datasets: [
     {
-      label: 'ចូល Website',
+      label: 'ចូលប្រើប្រាស់ប្រព័ន្ធ',
       data: loginData,
       borderColor: '#ef4444', // ពណ៌ក្រហម (Red-500)
       backgroundColor: '#ef4444',
@@ -138,19 +138,19 @@ const chartOptions = {
 </script>
 
 <template>
-  <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm font-khmer">
+  <div class="bg-white border border-gray-200 rounded-md p-6 mb-30 font-khmer">
     <!-- Header -->
     <div class="flex flex-col md:flex-row justify-between items-start mb-6 gap-4">
       <div>
         <h3 class="text-xl font-bold text-gray-900" style="font-family: 'Kantumruy Pro'">តារាងសកម្មភាព</h3>
-        <p class="text-sm text-gray-500 mt-1">{{ todayKhmer }}</p>
+        <p class="text-sm text-gray-500 mt-2 mb-10">{{ todayKhmer }}</p>
       </div>
       
       
     </div>
 
     <!-- Chart Body -->
-    <div class="w-full h-80 relative bg-slate-50/50 rounded-xl border border-slate-100 p-4">
+    <div class="w-full h-80 relative bg-slate-50/50 rounded-md border border-slate-100 p-4">
       <Line :data="chartData" :options="chartOptions" />
     </div>
   </div>

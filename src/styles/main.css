@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Khmer:wght@400;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Khmer:wght@400;500;700&display=swap');
 @font-face {
   font-family: 'KhmerMuol';
   src: url('../assets/fonts/KhmerMoul.woff2') format('woff2'),
@@ -154,6 +154,7 @@ body.ocm_dark_skin .ts-wrapper:not(.form-control,.form-select).single .ts-contro
 }
 .pri-color{
   color: var(--ocm-prim-color);
+  font-size: 110%;
 }
 .t-lspace{
   letter-spacing: var(--ocm-title-lspace);
@@ -202,7 +203,7 @@ body.ocm_dark_skin .ts-wrapper:not(.form-control,.form-select).single .ts-contro
   align-items: center !important;
 }
 .hide{
-  display: none;
+  display: none !important;
 }
 .pointer{
   cursor: pointer;
@@ -221,7 +222,7 @@ body.ocm_dark_skin .ts-wrapper:not(.form-control,.form-select).single .ts-contro
 }
 /* Form Element */
 input[type='text'].form-control{
-  font-size: 18px;
+  font-size: 16px;
   min-height: 48px;
   line-height: 32px;
   display: block;
@@ -242,7 +243,7 @@ input[type='text'].form-control{
   padding-right: 0.75rem;
   padding-bottom: 0.5rem;
   padding-left: 0.75rem;
-  font-size: 17px;
+  font-size: var(--ocm-input-s, 17px);
   line-height: 1.5rem;
   --input-shadow: 0 0 #0000;
   font-weight: 400;
@@ -338,7 +339,7 @@ input[type=file]::file-selector-button:hover{
   gap: 7px;
   min-height: 41px;
   padding: 0 20px;
-  font-weight: 700;
+  font-weight: 500;
   -webkit-transition: all .1s ease-in-out;
   transition: all .1s ease-in-out;
 }
@@ -807,7 +808,7 @@ body:not(.app_snav_open) .app_snav:hover{
 }
 @keyframes pulse-animation {
     0% {
-      box-shadow: 0 0 0 0px red;
+      box-shadow: 0 0 0 0px var(--com-pulse, red);
     }
     100% {
       box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
@@ -1006,12 +1007,13 @@ body:not(.app_snav_open) .app_snav:hover{
     padding: 0px 15px;
     border-radius: 4px;
     text-decoration: none;
-    font-weight: 700;
+    font-weight: 500;
     font-size: 17px;
   }
   .oc_nbtn svg, .ocm_btn_wr .button svg{
     width: 0.8em;
     height: 0.8em;
+    fill: currentColor;
   }
   .button .form_i svg{
     width: 1em;
@@ -1019,7 +1021,7 @@ body:not(.app_snav_open) .app_snav:hover{
   }
   .app_inner{
     padding-top: 90px;
-    height: calc(100vh - 70px);
+    height: calc(100vh - 60px);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -1106,10 +1108,10 @@ body:not(.app_snav_open) .app_snav:hover{
     object-fit: cover;
   }		
   .image-post-title{
-    font-weight: 700;
-    font-size: 15px !important;
+    font-weight: 500;
+    font-size: 16px !important;
     margin-top: 0px;
-    line-height: 1.4;
+    line-height: 1.5;
   }
   .image-post-title a{
     overflow: hidden !important;
@@ -1298,6 +1300,8 @@ body:not(.app_snav_open) .app_snav:hover{
   border-radius: var(--ocm-sm-radius);
   color: currentColor;
   cursor: pointer;
+  min-width: 22px;
+  justify-content: center;
 }
 .ocm_ac_view .acv_it.active, .ocm_ac_view .acv_it:hover{
   background: var(--ocm-sec-color);
@@ -1395,9 +1399,6 @@ body:not(.app_snav_open) .app_snav:hover{
   background: var(--ocm-app-bg);
   border: 1px solid var(--ocm-app-border);
 }
-.doc_sidebar .space-y-6 > .flex:nth-last-child(-n + 2) .text-sm.text-red-500{
-  display: none;
-}
 .doc_preview{
   width: 100%;
   max-width: 100%;
@@ -1439,7 +1440,7 @@ td.tbl_action{
   vertical-align: middle;
 }
 table.wp-list-table a, .link{
-  color: var(--ocm-prim-color);
+  /* color: var(--ocm-prim-color); */
 }
 .wp-list-table tr td:first-child{
   border-left: 0px;
@@ -1875,7 +1876,10 @@ table.wp-list-table .type-ocmdb_data .column-title .row-actions .trash a:before{
 }
 .ocm_dcwait .ocm_docf{
   background-color: #feefcc;
-  color: #fba500;
+  color: #f4a000;
+}
+.ocm_dcreject .pri-color{
+  color: #d92411;
 }
 .ocm_bfw .ocm_caw, .ocm_bfw .ocm_caw.noneh:hover, .ocm_card{
   cursor: pointer;
@@ -1899,6 +1903,8 @@ body:not(.ocm_dark_skin) .ocm_bfw .ocm_caw:hover .ocm_icard{
   gap: 3px;
 }
 .ocm_card_body{
+  --ocm-input-s: 15px;
+  --jlcols-gap: 10px;
   position: relative;
   padding: 15px;
   display: flex;
@@ -1926,7 +1932,7 @@ body:not(.ocm_dark_skin) .ocm_bfw .ocm_caw:hover .ocm_icard{
 }
 .ocm_bfw .ocm_caw.status_wait .ocm_icard, .ocm_bfw .ocm_caw.noneh.status_wait:hover .ocm_icard{
   background-color: #feefcc;
-  color: #fba500;
+  color: #f4a000;
 }
 .ocm_bfw .ocm_caw.status_accept .ocm_icard, .ocm_bfw .ocm_caw.noneh.status_accept:hover .ocm_icard{
   background-color: #d2f4ee;
@@ -2053,8 +2059,24 @@ body:not(.ocm_dark_skin) .ocm_bfw .ocm_caw:hover .ocm_icard{
 /*--------------------------------------------------------------------------------------------------------*/
 .doc-heading{
   font-size: 23px;
+  position: relative;
 }
-
+.doc-heading .ocm_btn_ac{
+  position: absolute;
+  bottom: -10px;
+  right: 0px;
+  float: right;
+    height: 30px;
+    min-height: 30px;
+    font-size: 13px;
+    padding: 0 10px;
+    border-radius: 2px;
+    letter-spacing: -0.02em;
+    background: #0371e3;
+}
+.doc-heading .ocm_btn_ac svg{
+  width: 1.1em;
+}
 /* status */
 .ocm_status{
   background-color: #fed786;
@@ -2062,8 +2084,13 @@ body:not(.ocm_dark_skin) .ocm_bfw .ocm_caw:hover .ocm_icard{
   min-width: 83px;
   border-radius: 20px;
   padding: 3px 10px;
-  font-size: 13px;
-  line-height: 1;
+  font-size: 13px;  
+}
+.ocm_status.ocm_statusgd{
+  min-width: auto;
+  position: absolute;
+  top: 5px;
+  left: 5px;
 }
 .ocm_status.acapr{
   background-color: #10b981;
@@ -2162,7 +2189,7 @@ body:not(.ocm_dark_skin) .ocm_bfw .ocm_caw:hover .ocm_icard{
 .noti_foot .noti_all{  
   background-color: var(--ocm-sec-color);
   color: #fff;
-  font-weight: 700;
+  font-weight: 500;
   font-size: 15px;
   width: 100%;
   display: flex;
@@ -2178,7 +2205,7 @@ body:not(.ocm_dark_skin) .ocm_bfw .ocm_caw:hover .ocm_icard{
 }
 .noti_head .noti_clear, .ocm_lbl{
   background-color: #e4ebfe;
-  color: #4755ff;
+  color: #000ebb;
   height: 22px;
   cursor: pointer;
   display: flex;
@@ -2186,6 +2213,7 @@ body:not(.ocm_dark_skin) .ocm_bfw .ocm_caw:hover .ocm_icard{
   padding: 0px 10px;
   border-radius: 4px;
   font-size: 70%;
+  font-weight: 500;
 }
 .noti_head .noti_clear{
   color: #000000;
@@ -2220,7 +2248,7 @@ body:not(.ocm_dark_skin) .ocm_bfw .ocm_caw:hover .ocm_icard{
   font-size: 95%;
 }
 .fs-90{
-  font-size: 90%;
+  font-size: 85%;
 }
 .ellip-2{
   overflow: hidden;
@@ -2231,7 +2259,8 @@ body:not(.ocm_dark_skin) .ocm_bfw .ocm_caw:hover .ocm_icard{
   -webkit-line-clamp: 2;
   word-break: break-word;
   overflow-wrap: break-word;
-  letter-spacing: -0.02em;
+  letter-spacing: 0em;
+  font-weight: 500;
 }
 /* ocm grid */
 .ocmopt-col{
@@ -2240,6 +2269,9 @@ body:not(.ocm_dark_skin) .ocm_bfw .ocm_caw:hover .ocm_icard{
   grid-column-gap: var(--jlcols-gap, 20px) !important;
   grid-row-gap: var(--jlrow-gap, 20px) !important;
   grid-template-columns: repeat(var(--grid-col-num, 2), minmax(0, 1fr));
+}
+.mt-20{
+  margin-top: 20px;
 }
 .mb-5{
   margin-bottom: 5px;
@@ -2298,7 +2330,7 @@ body:not(.ocm_dark_skin) .ocm_bfw .ocm_caw:hover .ocm_icard{
 }
 .ocmopt-meta-title label {
   font-size: 17px;
-  font-weight: 700;
+  font-weight: var(--ocm-inlbl-s, 500);
   line-height: 1.2;
 }
 

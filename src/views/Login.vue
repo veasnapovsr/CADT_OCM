@@ -89,7 +89,19 @@ export default {
     onMounted(() => {
       const token = localStorage.getItem("token")
       if (token) {
-        router.push("/dashboard")
+        try {
+          const userRaw = localStorage.getItem("user")
+          const user = userRaw ? JSON.parse(userRaw) : null
+          const userId = user?.id ? String(user.id) : ""
+
+          if (userId === "2901") {
+            router.push("/pdf/flow-dash2")
+          } else {
+            router.push("/dashboard")
+          }
+        } catch {
+          router.push("/dashboard")
+        }
       }
     })
 
@@ -117,8 +129,13 @@ export default {
         localStorage.setItem("upload_max_filesize", upload_max_filesize)
 
         toast.success("ចូលប្រព័ន្ធបានជោគជ័យ")
+        const userId = record?.id ? String(record.id) : ""
 
-        router.push("/dashboard")
+        if (userId === "2901") {
+          router.push("/pdf/flow-dash2")
+        } else {
+          router.push("/dashboard")
+        }
       } catch (err) {
         const apiMessage =
           err.response?.data?.message ||

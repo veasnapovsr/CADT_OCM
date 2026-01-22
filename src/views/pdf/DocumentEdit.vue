@@ -48,21 +48,6 @@
 							</div>
 				
 							<div class="ocmopt-meta">
-								<div class="ocmopt-meta-title"><label class="ocmopt-meta-label t-lspace">អង្គភាពជំនាញ</label></div>
-								<div class="ocmopt-meta-content formsel">
-									<InputSelect
-										v-model="form.department"
-										:options="departments"
-										track-by="value"
-										label="label"
-										placeholder="អង្គភាពជំនាញ"
-										:multiple="false"
-										:clear-on-select="false"
-									/>
-								</div>
-							</div>	
-
-              <div class="ocmopt-meta">
 								<div class="ocmopt-meta-title"><label class="ocmopt-meta-label t-lspace">ប្រភេទឯកសារ</label></div>
 								<div class="ocmopt-meta-content formsel">
 									<InputSelect
@@ -76,6 +61,21 @@
 									/>
 								</div>
 							</div>	
+
+              <div class="ocmopt-meta">
+								<div class="ocmopt-meta-title"><label class="ocmopt-meta-label t-lspace">អង្គភាពជំនាញ</label></div>
+								<div class="ocmopt-meta-content formsel">
+									<InputSelect
+										v-model="form.department"
+										:options="departments"
+										track-by="value"
+										label="label"
+										placeholder="អង្គភាពជំនាញ"
+										:multiple="false"
+										:clear-on-select="false"
+									/>
+								</div>
+							</div>	              
 
               <div class="ocmopt-meta">
 								<div class="ocmopt-meta-title"><label class="ocmopt-meta-label t-lspace">ក្រសួង-ស្ថាប័ន</label></div>
@@ -212,19 +212,8 @@ export default {
         { value: "13", label: "អាជ្ញាធរជាតិទទួលបន្ទុកកិច្ចការព្រំដែន" },
       ],
       documentTypes: [
-        { value: "2", label: "ព្រះរាជក្រម" },
-        { value: "3", label: "ព្រះរាជក្រឹត្យ.បក" },
-        { value: "4", label: "អនុក្រឹត្យ.បក" },
-        { value: "5", label: "ស.ជ.ណ" },
-        { value: "6", label: "សេចក្ដីសម្រេច" },
-        { value: "7", label: "សារាចរ និង សារាចរណែនាំ" },
-        { value: "8", label: "ប្រកាស" },
-        { value: "9", label: "គោលនយោបាយជាតិ" },
-        { value: "10", label: "ផែនការយុទ្ធសាស្ត្រ" },
-        { value: "11", label: "បទបញ្ជារាជរដ្ឋាភិបាល" },
-        { value: "12", label: "ផែនការសកម្មភាពក្រសួងនានា" },
-        { value: "13", label: "អនុក្រឹត្យ.តត" },
-        { value: "14", label: "ព្រះរាជក្រឹត្យ.តត" },
+      { value: "1", label: "របាយការណ៍" },
+      { value: "2", label: "សំណើរ" },
       ],
       ministries: [
         { value: "2", label: "ទីស្តីការគណៈរដ្ឋមន្ត្រី" },

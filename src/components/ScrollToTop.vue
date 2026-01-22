@@ -42,6 +42,7 @@ onUnmounted(() => {
   border: none;
   border-radius: 4px;
   cursor: pointer;  
+  z-index: 9;
 }
 .scroll-top-btn svg{
   width: .65em;

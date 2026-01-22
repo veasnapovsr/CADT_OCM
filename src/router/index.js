@@ -222,7 +222,20 @@ router.beforeEach((to, from, next) => {
   }
 
   if (to.path === '/login' && isTokenValid()) {
-    next('/dashboard')
+    // If already logged in, decide redirect based on user id
+    try {
+      const userRaw = localStorage.getItem('user')
+      const user = userRaw ? JSON.parse(userRaw) : null
+      const userId = user?.id ? String(user.id) : ''
+
+      if (userId === '2901') {
+        next('/pdf/flow-dash2')
+      } else {
+        next('/dashboard')
+      }
+    } catch {
+      next('/dashboard')
+    }
     return
   }
 

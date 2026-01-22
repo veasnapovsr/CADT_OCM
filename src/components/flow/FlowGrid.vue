@@ -41,15 +41,15 @@ const statusText = (s) => ({
 }[s])
 
 const statusClass = (s) => ({
-  pending: 'bg-yellow-100 text-yellow-800',
-  approved: 'bg-green-100 text-green-700',
-  rejected: 'bg-red-100 text-red-700',
-  draft: 'bg-gray-200 text-gray-700'
+  pending: 'acpending',
+  approved: 'acapr',
+  rejected: 'acdecl',
+  draft: 'acdraft'
 }[s])
 </script>
 
 <template>
-  <div class="mt-6">
+  <div class="mt-20 mb-20">
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-6">
 
       <!-- IMPORTANT: use props.documents -->
@@ -57,17 +57,17 @@ const statusClass = (s) => ({
         v-for="doc in documents"
         :key="doc.id"
         class="bg-(--ocm-app-bg) border border-(--ocm-app-border)
-               rounded-xl overflow-hidden hover:shadow-md transition
+               rounded-md overflow-hidden hover:shadow-md transition
                cursor-pointer relative"
         @click="goToDetail(doc)"
       >
 
         <!-- PREVIEW -->
-        <div class="relative bg-gray-100 h-56 flex items-center justify-center">
+        <div class="relative bg-white-100 h-56 flex items-center justify-center">
 
           <!-- STATUS -->
           <span
-            class="absolute top-3 left-3 text-xs font-semibold px-3 py-1 rounded-full"
+            class="ocm_status ocm_statusgd"
             :class="statusClass(doc.status)"
           >
             {{ statusText(doc.status) }}
@@ -172,15 +172,8 @@ const statusClass = (s) => ({
         </div>
 
         <!-- CONTENT -->
-        <div class="p-4 space-y-3">
-          <div class="flex gap-2">
-            <span
-              class="w-8 h-8 bg-red-100 text-red-600
-                     rounded-lg flex items-center justify-center
-                     text-xs font-bold"
-            >
-              PDF
-            </span>
+        <div class="p-4 space-y-3 border-t border-t-(--ocm-app-border)">
+          <div class="flex gap-2 mb-10">
             <p class="text-sm font-semibold line-clamp-2">
               {{ doc.title }}
             </p>

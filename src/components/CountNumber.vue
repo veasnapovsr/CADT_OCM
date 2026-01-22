@@ -1,7 +1,6 @@
 <template>
-  <section class="count-section">
+  <section class="count-section mb-30">
     <header class="section-heading">
-      <h2>ចំនួនប្រតិបត្តិការ​សរុប</h2>
     </header>
 
     <div class="card-grid">
@@ -21,9 +20,9 @@
               <circle cx="12" cy="12" r="3" />
             </svg>
           </span>
-          <span class="stat-label">ចំនួននាក់ចូលមើល</span>
+          <span class="stat-label">ចំនួននាក់ចូលប្រើប្រាស់ប្រព័ន្ធ</span>
         </div>
-        <p class="stat-value">{{ formatNumber(views) }}</p>
+        <p class="stat-value">{{ formatKhmerNumber(formatNumber(views)) }}</p>
       </article>
 
       <article class="stat-card">
@@ -43,9 +42,9 @@
               <path d="M5 21h14" />
             </svg>
           </span>
-          <span class="stat-label">ចំនួននាក់ទាញយកចេញ</span>
+          <span class="stat-label">ចំនួននាក់ចូលមើលឯកសារ</span>
         </div>
-        <p class="stat-value">{{ formatNumber(downloads) }}</p>
+        <p class="stat-value">{{ formatKhmerNumber(formatNumber(downloads)) }}</p>
       </article>
 
       <article class="stat-card">
@@ -65,9 +64,9 @@
               <path d="m5 12 7 7" />
             </svg>
           </span>
-          <span class="stat-label">ចំនួននាក់កែប្រែ</span>
+          <span class="stat-label">ចំនួនមតិយោបល់</span>
         </div>
-        <p class="stat-value">{{ formatNumber(edits) }}</p>
+        <p class="stat-value">{{ formatKhmerNumber(formatNumber(edits)) }}</p>
       </article>
     </div>
   </section>
@@ -75,6 +74,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { formatKhmerNumber } from '@/lib/utils.js'
 
 const views = ref(0)
 const downloads = ref(0)
@@ -105,14 +105,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.count-section {
-  background: var(--ocm-bg);
-  color: var(--ocm-color);
-  border-radius: 16px;
-  border: 1px solid var(--ocm-app-border);
-  padding: 20px 22px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-}
 
 .section-heading {
   display: flex;
@@ -145,14 +137,13 @@ onMounted(() => {
 .stat-card {
   background: var(--ocm-app-bg);
   border: 1px solid var(--ocm-app-border);
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: 6px;
+  padding: 10px;
   display: flex;
   flex-direction: column;
   gap: 12px;
   transition: transform 0.18s ease, box-shadow 0.18s ease,
     border-color 0.18s ease;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
 }
 
 .stat-card:hover {
@@ -175,9 +166,8 @@ onMounted(() => {
 
 .stat-value {
   margin: 0;
-  font-size: 34px;
+  font-size: 26px;
   font-weight: 800;
-  letter-spacing: 0.01em;
   color: var(--ocm-prim-color);
 }
 
