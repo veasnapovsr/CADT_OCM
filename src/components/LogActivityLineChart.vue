@@ -3,134 +3,115 @@ import {
   Chart as ChartJS,
   TimeScale,
   LinearScale,
-  PointElement,
-  LineElement,
+  BarElement,
   Tooltip,
   Legend
 } from 'chart.js';
-import { Line } from 'vue-chartjs';
+
+import { Bar } from 'vue-chartjs';
 import 'chartjs-adapter-date-fns';
 import { km } from 'date-fns/locale';
 
-ChartJS.register(TimeScale, LinearScale, PointElement, LineElement, Tooltip, Legend);
+ChartJS.register(TimeScale, LinearScale, BarElement, Tooltip, Legend);
 
-const todayKhmer = new Intl.DateTimeFormat('km-KH', { 
-  weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
-}).format(new Date());
+/* ===== Today (Khmer) ===== */
+const today = new Date();
+const todayKhmer = new Intl.DateTimeFormat('km-KH', {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+}).format(today);
 
-// ទិន្នន័យសកម្មភាពម្នាក់ៗ (ម្នាក់ ចំណុចមួយ)
-// y តំណាងឱ្យកម្ពស់នៃបន្ទាត់ដើម្បីឱ្យមើលទៅឃើញឡើងចុះ (Pointer style)
-const loginData = [
-  { x: new Date().setHours(8, 10), y: 2, user: 'សុខ សាន', action: 'បានចូល Website' },
-  { x: new Date().setHours(8, 30), y: 5, user: 'ចាន់ ណា', action: 'បានចូល Website' },
-  { x: new Date().setHours(9, 15), y: 3, user: 'មករា វុទ្ធី', action: 'បានចូល Website' },
-  { x: new Date().setHours(10, 0), y: 7, user: 'លីដា ហេង', action: 'បានចូល Website' },
-  { x: new Date().setHours(10, 45), y: 4, user: 'ស៊ីណា រ៉េត', action: 'បានចូល Website' },
-  { x: new Date().setHours(12, 10), y: 2, user: 'បូរ៉ា វី', action: 'បានចូល Website' },
-  { x: new Date().setHours(13, 30), y: 6, user: 'ស្រីមុំ ពេជ្រ', action: 'បានចូល Website' },
-  { x: new Date().setHours(15, 20), y: 8, user: 'ដេវីត ឡុង', action: 'បានចូល Website' },
-  { x: new Date().setHours(16, 40), y: 3, user: 'សីហា វ៉ាន់', action: 'បានចូល Website' },
+/* ===== Helper: today at hour ===== */
+const atHour = (h) => {
+  const d = new Date(today);
+  d.setHours(h, 0, 0, 0);
+  return d;
+};
+
+/* ===== Hourly Data (7AM → 5PM) ===== */
+const hourlyStats = [
+  { x: atHour(7),  login: 5,  view: 10, comment: 1 },
+  { x: atHour(8),  login: 12, view: 25, comment: 4 },
+  { x: atHour(9),  login: 20, view: 40, comment: 8 },
+  { x: atHour(10), login: 18, view: 35, comment: 6 },
+  { x: atHour(11), login: 22, view: 42, comment: 9 },
+  { x: atHour(12), login: 15, view: 30, comment: 5 },
+  { x: atHour(13), login: 17, view: 33, comment: 6 },
+  { x: atHour(14), login: 19, view: 36, comment: 7 },
+  { x: atHour(15), login: 21, view: 40, comment: 8 },
+  { x: atHour(16), login: 16, view: 28, comment: 5 },
+  { x: atHour(17), login: 10, view: 18, comment: 3 },
 ];
 
-const viewData = [
-  { x: new Date().setHours(8, 45), y: 1, user: 'ដានី ទេវី', action: 'បានចូលមើលឯកសារ' },
-  { x: new Date().setHours(9, 30), y: 4, user: 'សុវណ្ណ រិទ្ធ', action: 'បានចូលមើលឯកសារ' },
-  { x: new Date().setHours(11, 20), y: 6, user: 'គឹមហ៊ាង', action: 'បានចូលមើលឯកសារ' },
-  { x: new Date().setHours(12, 45), y: 3, user: 'ពិសិដ្ឋ ម៉ៅ', action: 'បានចូលមើលឯកសារ' },
-  { x: new Date().setHours(14, 15), y: 7, user: 'រតនា ម៉ារី', action: 'បានចូលមើលឯកសារ' },
-  { x: new Date().setHours(15, 50), y: 2, user: 'ចិន្តា ប៊ុន', action: 'បានចូលមើលឯកសារ' },
-  { x: new Date().setHours(17, 10), y: 5, user: 'វិច្ឆិកា នីត', action: 'បានចូលមើលឯកសារ' },
-];
-
+/* ===== Chart Data ===== */
 const chartData = {
   datasets: [
     {
-      label: 'ចូលប្រើប្រាស់ប្រព័ន្ធ',
-      data: loginData,
-      borderColor: '#ef4444', // ពណ៌ក្រហម (Red-500)
-      backgroundColor: '#ef4444',
-      tension: 0, 
-      pointRadius: 6,
-      pointHoverRadius: 9,
-      borderWidth: 2,
+      label: 'ចំនួននាក់ចូលប្រើប្រាស់ប្រព័ន្ធ',
+      data: hourlyStats.map(d => ({ x: d.x, y: d.login })),
+      backgroundColor: '#ef4444', // red
+      borderRadius: 6,
+      barThickness: 10
     },
     {
-      label: 'ចូលមើលឯកសារ',
-      data: viewData,
-      borderColor: '#3b82f6', // ពណ៌ខៀវ (Blue-500)
-      backgroundColor: '#3b82f6',
-      tension: 0,
-      pointRadius: 6,
-      pointHoverRadius: 9,
-      borderWidth: 2,
+      label: 'ចំនួននាក់ចូលមើលឯកសារ',
+      data: hourlyStats.map(d => ({ x: d.x, y: d.view })),
+      backgroundColor: '#3b82f6', // blue
+      borderRadius: 6,
+      barThickness: 10
+    },
+    {
+      label: 'ចំនួនមតិយោបល់',
+      data: hourlyStats.map(d => ({ x: d.x, y: d.comment })),
+      backgroundColor: '#22c55e', // green
+      borderRadius: 6,
+      barThickness: 10
     }
   ]
 };
 
+/* ===== Chart Options ===== */
 const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
-  scales: {
-    x: {
-      type: 'time',
-      time: { unit: 'hour', displayFormats: { hour: 'HH:mm' } },
-      adapters: { date: { locale: km } },
-      grid: { display: true, color: '#f3f4f6' },
-    },
-    y: {
-      beginAtZero: true,
-      grid: { color: '#f3f4f6' },
-      ticks: { display: false } 
-    }
-  },
   plugins: {
     legend: {
       position: 'top',
       align: 'start',
-      labels: { usePointStyle: true }
+      labels: {
+        usePointStyle: true,
+        boxWidth: 8
+      }
     },
     tooltip: {
-      enabled: false,
-      external: function(context) {
-        let tooltipEl = document.getElementById('chartjs-tooltip-red');
-        if (!tooltipEl) {
-          tooltipEl = document.createElement('div');
-          tooltipEl.id = 'chartjs-tooltip-red';
-          tooltipEl.className = 'absolute   p-3 rounded-xl shadow-2xl pointer-events-none transition-opacity duration-200 z-50 border border-gray-700';
-          document.body.appendChild(tooltipEl);
+      backgroundColor: '#111827',
+      titleColor: '#fff',
+      bodyColor: '#e5e7eb',
+      padding: 10
+    }
+  },
+  scales: {
+    x: {
+      type: 'time',
+      adapters: {
+        date: { locale: km }
+      },
+      time: {
+        unit: 'hour',
+        displayFormats: {
+          hour: 'ha'   // 7AM, 8AM, 5PM
         }
-
-        const tooltipModel = context.tooltip;
-        if (tooltipModel.opacity === 0) {
-          tooltipEl.style.opacity = 0;
-          return;
-        }
-
-        if (tooltipModel.body) {
-          const dataPoint = tooltipModel.dataPoints[0].raw;
-          const color = tooltipModel.dataPoints[0].dataset.borderColor;
-
-          tooltipEl.innerHTML = `
-            <div class="flex items-center gap-3 font-khmer min-w-[160px]">
-              <div class="w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold border-2" style="background-color: ${color}; border-color: white;">
-                ${dataPoint.user.charAt(0)}
-              </div>
-              <div style="font-family: 'Kantumruy Pro', sans-serif">
-                <div class="font-bold text-sm" style="color: ${color}">${dataPoint.user}</div>
-                <div class="text-xs ">${dataPoint.action}</div>
-                <div class="text-[10px] mt-1 ">
-                  ម៉ោង ${new Date(dataPoint.x).toLocaleTimeString('km-KH', { hour: '2-digit', minute: '2-digit' })}
-                </div>
-              </div>
-            </div>
-          `;
-        }
-
-        const position = context.chart.canvas.getBoundingClientRect();
-        tooltipEl.style.opacity = 1;
-        tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
-        tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY - 100 + 'px';
-      }
+      },
+      min: atHour(7),
+      max: atHour(17),
+      grid: { display: false }
+    },
+    y: {
+      beginAtZero: true,
+      grid: { color: '#f3f4f6' },
+      ticks: { stepSize: 5 }
     }
   }
 };
@@ -138,27 +119,17 @@ const chartOptions = {
 
 <template>
   <div>
-    <h3 class="text-xl font-bold " >តារាងសកម្មភាព</h3>
-    <p class="text-sm  mt-2 mb-10">{{ todayKhmer }}</p>
+    <h3 class="text-xl font-bold">តារាងសកម្មភាពប្រចាំថ្ងៃ</h3>
+    <p class="text-sm mt-2 mb-6">{{ todayKhmer }}</p>
   </div>
-  <div class=" border border-gray-200 rounded-md p-6 mb-30 font-khmer">
-    <!-- Header -->
-    <div class="flex flex-col md:flex-row justify-between items-start mb-6 gap-4">
-      
-      
-    </div>
 
-    <!-- Chart Body -->
-    <div class="w-full h-80 relative  rounded-md border border-slate-100 p-4">
-      <Line :data="chartData" :options="chartOptions" />
+  <div class="border border-gray-200 rounded-md p-6 font-khmer">
+    <div class="w-full h-80 relative rounded-md border border-slate-100 p-4">
+      <Bar :data="chartData" :options="chartOptions" />
     </div>
   </div>
 </template>
 
-<style>
-
-#chartjs-tooltip-red {
-  transform: translate(-50%, -100%);
-  margin-top: -10px;
-}
+<style scoped>
+/* dashboard-clean */
 </style>
