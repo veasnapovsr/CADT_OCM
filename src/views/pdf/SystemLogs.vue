@@ -151,10 +151,11 @@ onMounted(() => {
 
 /* Card */
 .dashboard-card {
-  background: white;
+  background: var(--ocm-app-bg, #f8fafc);
   border-radius: 16px;
   padding: 20px;
-  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+  border: 1px solid var(--ocm-app-border, #e2e8f0);
+  box-shadow: none;
 }
 
 /* Chart sizing */
@@ -174,20 +175,5 @@ onMounted(() => {
   position: sticky;
   top: 20px;
   height: fit-content;
-}
-
-/* Responsive */
-@media (max-width: 1024px) {
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .dashboard-row {
-    grid-template-columns: 1fr;
-  }
-
-  .dashboard-right {
-    position: relative;
-  }
 }
 </style>

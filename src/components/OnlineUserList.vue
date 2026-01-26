@@ -1,11 +1,21 @@
 <template>
-  <div class="w-full bg-white rounded-2xl border border-gray-100 shadow-sm">
-
+  <div
+    class="w-full bg-[var(--ocm-app-bg,#ffffff)] rounded-2xl
+           border border-(--ocm-app-border,#e2e8f0) shadow-sm"
+  >
     <!-- Header -->
-    <div class="px-5 py-4 border-b border-gray-100">
-      <h2 class="text-base font-semibold text-gray-800 tracking-wide flex items-center justify-between">
+    <div
+      class="px-5 py-4 border-b border-(--ocm-app-border,#e2e8f0)"
+    >
+      <h2
+        class="text-base font-semibold
+               tracking-wide flex items-center justify-between"
+      >
         <span>អ្នកអនឡាញ</span>
-        <span class="text-xs text-green-600 font-medium">
+        <span
+          class="text-xs font-medium
+                 text-[var(--ocm-app-success,#16a34a)]"
+        >
           ({{ onlineUsers.length }})
         </span>
       </h2>
@@ -16,7 +26,9 @@
       <div
         v-for="user in onlineUsers"
         :key="user.value"
-        class="flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition group"
+        class="flex items-center justify-between px-5 py-4
+               hover:bg-[var(--ocm-app-hover,#f8fafc)]
+               transition group"
       >
         <div class="flex items-center gap-4">
 
@@ -25,7 +37,8 @@
             <img
               :src="user.img"
               :alt="user.name"
-              class="w-11 h-11 rounded-full object-cover ring-2 ring-gray-100"
+              class="w-11 h-11 rounded-full object-cover
+                     ring-2 ring-(--ocm-app-border,#e2e8f0)"
               loading="lazy"
               referrerpolicy="no-referrer"
               @error="onImgError($event, user.name)"
@@ -33,16 +46,25 @@
 
             <!-- Online Pulse -->
             <span
-              class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full ring-2 ring-white animate-pulse"
+              class="absolute bottom-0 right-0 w-3 h-3
+                     bg-[var(--ocm-app-success,#22c55e)]
+                     rounded-full ring-2
+                     ring-[var(--ocm-app-bg,#ffffff)]
+                     animate-pulse"
             />
           </div>
 
           <!-- Info -->
           <div class="leading-tight">
-            <p class="text-sm font-medium text-gray-800 group-hover:text-gray-900">
+            <p
+              class="text-sm font-medium
+                     group-hover:text-[var(--ocm-app-text-strong,#111827)]"
+            >
               {{ user.name }}
             </p>
-            <p class="text-xs text-gray-500">
+            <p
+              class="text-xs"
+            >
               Active now
             </p>
           </div>
@@ -53,14 +75,15 @@
       <!-- Empty State -->
       <div
         v-if="!onlineUsers.length"
-        class="px-5 py-8 text-center text-sm text-gray-400"
+        class="px-5 py-8 text-center text-sm
+               text-[var(--ocm-app-muted,#9ca3af)]"
       >
         មិនមានអ្នកអនឡាញ
       </div>
     </div>
-
   </div>
 </template>
+
 
 <script setup>
 import { ref, onMounted } from 'vue'
