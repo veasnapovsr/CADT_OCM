@@ -20,7 +20,7 @@
           <!-- LEFT COLUMN -->
           <div class="dashboard-left">
 
-            <!-- CHART + DOCUMENT VIEW (SAME ROW) -->
+            <!-- CHART + DOCUMENT VIEW -->
             <div class="dashboard-row">
 
               <!-- Chart -->
@@ -63,7 +63,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 
 import Header from '@/components/Header.vue'
 import Aside from '@/components/Aside.vue'
@@ -77,10 +77,11 @@ import DocumentViewDonut from '@/components/DocumentViewDonut.vue'
 import { leaders } from '@/data/leader'
 import { documents } from '@/data/documents'
 
-// Logs
+/* ================================
+   LOGS
+================================ */
 const logs = ref([])
 
-// Mock logs generator
 const generateMockLogs = () => {
   const mockLogs = []
 
@@ -101,7 +102,6 @@ const generateMockLogs = () => {
   return mockLogs
 }
 
-// Top 10 Active Users
 const topActiveUsers = computed(() => {
   const userMap = new Map()
 
@@ -121,62 +121,118 @@ const topActiveUsers = computed(() => {
     .slice(0, 10)
 })
 
+/* ================================
+   VIEWPORT / DPI FIX
+================================ */
+let resizeTimer = null
+
+const forceReflow = () => {
+  // Force browser to recompute grid, dvh, clamp, sticky
+  document.body.style.display = 'none'
+  // eslint-disable-next-line no-unused-expressions
+  document.body.offsetHeight
+  document.body.style.display = ''
+}
+
+const handleResize = () => {
+  clearTimeout(resizeTimer)
+  resizeTimer = setTimeout(() => {
+    forceReflow()
+  }, 150)
+}
+
 onMounted(() => {
   logs.value = generateMockLogs()
+
+  window.addEventListener('resize', handleResize)
+  window.addEventListener('orientationchange', handleResize)
+
+  // Run once after mount (important)
+  setTimeout(forceReflow, 60)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', handleResize)
+  window.removeEventListener('orientationchange', handleResize)
 })
 </script>
 
 <style scoped>
-/* Main grid */
+/* ================================
+   MAIN GRID
+================================ */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: 20px;
-  margin-bottom: 20px;
+  grid-template-columns: 1fr minmax(260px, 320px);
+  gap: clamp(12px, 2vw, 20px);
+  margin-bottom: clamp(12px, 2vw, 20px);
 }
 
-/* Left column */
+/* ================================
+   LEFT COLUMN
+================================ */
 .dashboard-left {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: clamp(16px, 2.5vw, 24px);
 }
 
-/* Chart + View row */
+/* ================================
+   CHART + VIEW ROW
+================================ */
 .dashboard-row {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  gap: 20px;
+  gap: clamp(12px, 2vw, 20px);
 }
 
-/* Card */
+/* ================================
+   CARD
+================================ */
 .dashboard-card {
-  background: white;
+  background: var(--ocm-app-bg, #f8fafc);
   border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+  padding: clamp(14px, 2vw, 20px);
+  border: 1px solid var(--ocm-app-border, #e2e8f0);
 }
 
-/* Chart sizing */
+/* ================================
+   CHART CARD
+================================ */
 .chart-card {
-  min-height: 320px;
+  min-height: clamp(240px, 35dvh, 320px);
 }
 
-/* View card center */
+/* ================================
+   VIEW CARD
+================================ */
 .view-card {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
-/* Right column */
+/* ================================
+   RIGHT COLUMN
+================================ */
 .dashboard-right {
   position: sticky;
-  top: 20px;
+  top: clamp(12px, 2vh, 20px);
   height: fit-content;
 }
 
-/* Responsive */
+/* ================================
+   LAPTOP (≤1280px)
+================================ */
+@media (max-width: 1280px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr 280px;
+  }
+}
+
+/* ================================
+   TABLET (≤1024px)
+================================ */
 @media (max-width: 1024px) {
   .dashboard-grid {
     grid-template-columns: 1fr;
@@ -187,7 +243,16 @@ onMounted(() => {
   }
 
   .dashboard-right {
-    position: relative;
+    position: static;
+  }
+}
+
+/* ================================
+   MOBILE (≤640px)
+================================ */
+@media (max-width: 640px) {
+  .chart-card {
+    min-height: 220px;
   }
 }
 </style>
