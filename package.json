@@ -34,6 +34,7 @@
     "flatpickr": "^4.6.13",
     "lucide-vue-next": "^0.562.0",
     "pdfjs-dist": "^5.4.530",
+    "qrcode.vue": "^3.8.0",
     "radix-vue": "^1.9.17",
     "reka-ui": "^2.7.0",
     "tailwind-merge": "^3.4.0",

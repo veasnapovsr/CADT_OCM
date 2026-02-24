@@ -8,22 +8,7 @@
 							<span class="app_txt t-lspace">ផ្ទាំងគ្រប់គ្រង</span>
 						</span>
 					</div>
-					<div class="app_card app_01"
-					:class="{ app_active: ['/pdf/flow', '/pdf/documents-detail', '/pdf/documents-add' , '/pdf/documents-add2', '/pdf/documents-edit', '/pdf/documents-detial'].includes(route.path) }">
-						<router-link to="/pdf/flow"></router-link>
-						<span class="apico app1">
-							<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="4 2 16 20"><g fill="none"><path d="M12 8V2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10h-6a2 2 0 0 1-2-2zm-5 4.25a.75.75 0 1 1 1.5 0a.75.75 0 0 1-1.5 0zm0 3a.75.75 0 1 1 1.5 0a.75.75 0 0 1-1.5 0zm0 3a.75.75 0 1 1 1.5 0a.75.75 0 0 1-1.5 0zm3-6a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5a.75.75 0 0 1-.75-.75zm0 3a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5a.75.75 0 0 1-.75-.75zm0 3a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5a.75.75 0 0 1-.75-.75zM13.5 8V2.5l6 6H14a.5.5 0 0 1-.5-.5z" fill="currentColor"></path></g></svg>
-							<span class="app_txt t-lspace">លំហូរឯកសារ<span class="d-flex align-items-center">២០ថ្មី</span></span>
-						</span>
-					</div>
-					<div class="app_card app_02 hide"
-					:class="{ app_active: route.path === '/pdf/my-documents' }">
-            <router-link to="/pdf/my-documents"></router-link>
-						<span class="apico app2">
-							<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="4 2 16 20"><g fill="none"><path d="M12 8V2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10h-6a2 2 0 0 1-2-2zm-5 4.25a.75.75 0 1 1 1.5 0a.75.75 0 0 1-1.5 0zm0 3a.75.75 0 1 1 1.5 0a.75.75 0 0 1-1.5 0zm0 3a.75.75 0 1 1 1.5 0a.75.75 0 0 1-1.5 0zm3-6a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5a.75.75 0 0 1-.75-.75zm0 3a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5a.75.75 0 0 1-.75-.75zm0 3a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5a.75.75 0 0 1-.75-.75zM13.5 8V2.5l6 6H14a.5.5 0 0 1-.5-.5z" fill="currentColor"></path></g></svg>
-							<span class="app_txt t-lspace">ឯកសាររបស់ខ្ញុំ<span class="d-flex align-items-center">១២</span></span>
-						</span>
-					</div>
+
 					<div class="app_card app_03"
 					:class="{ app_active: route.path === '/pdf/history' }">
             <router-link to="/pdf/history"></router-link>
@@ -32,6 +17,7 @@
 							<span class="app_txt t-lspace">ប្រវត្តិឯកសារ<span class="d-flex align-items-center">៥​០</span></span>
 						</span>
 					</div>
+
 					<div class="app_card app_04"
 					:class="{ app_active: route.path === '/pdf/logs' }">
             <router-link to="/pdf/logs"></router-link>
@@ -40,6 +26,35 @@
 							<span class="app_txt t-lspace">Logs ប្រព័ន្ធគ្រប់គ្រង</span>
 						</span>
 					</div>
+
+					<div class="app_card app_01"
+					:class="{ app_active: ['/pdf/flow', '/pdf/documents-detail', '/pdf/documents-add' , '/pdf/documents-add2', '/pdf/documents-edit', '/pdf/documents-detial'].includes(route.path) }">
+						<router-link to="/pdf/flow"></router-link>
+						<span class="apico app1">
+							<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="4 2 16 20"><g fill="none"><path d="M12 8V2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10h-6a2 2 0 0 1-2-2zm-5 4.25a.75.75 0 1 1 1.5 0a.75.75 0 0 1-1.5 0zm0 3a.75.75 0 1 1 1.5 0a.75.75 0 0 1-1.5 0zm0 3a.75.75 0 1 1 1.5 0a.75.75 0 0 1-1.5 0zm3-6a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5a.75.75 0 0 1-.75-.75zm0 3a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5a.75.75 0 0 1-.75-.75zm0 3a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5a.75.75 0 0 1-.75-.75zM13.5 8V2.5l6 6H14a.5.5 0 0 1-.5-.5z" fill="currentColor"></path></g></svg>
+							<span class="app_txt t-lspace">លំហូរឯកសារ<span class="d-flex align-items-center">២០ថ្មី</span></span>
+						</span>
+					</div>
+
+					<div class="app_card app_05"
+					:class="{ app_active: route.path === '/pdf/official-management' }">
+			<router-link to="/pdf/official-management"></router-link>
+						<span class="apico app5">
+							<!-- Simple icon for officials, can be replaced -->
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M5.5 21h13a2 2 0 0 0 2-2v-1a7 7 0 0 0-14 0v1a2 2 0 0 0 2 2z"/></svg>
+							<span class="app_txt t-lspace">គ្រប់គ្រងមន្ត្រី</span>
+						</span>
+					</div>
+
+					<div class="app_card app_02 hide"
+					:class="{ app_active: route.path === '/pdf/my-documents' }">
+            <router-link to="/pdf/my-documents"></router-link>
+						<span class="apico app2">
+							<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="4 2 16 20"><g fill="none"><path d="M12 8V2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10h-6a2 2 0 0 1-2-2zm-5 4.25a.75.75 0 1 1 1.5 0a.75.75 0 0 1-1.5 0zm0 3a.75.75 0 1 1 1.5 0a.75.75 0 0 1-1.5 0zm0 3a.75.75 0 1 1 1.5 0a.75.75 0 0 1-1.5 0zm3-6a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5a.75.75 0 0 1-.75-.75zm0 3a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5a.75.75 0 0 1-.75-.75zm0 3a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5a.75.75 0 0 1-.75-.75zM13.5 8V2.5l6 6H14a.5.5 0 0 1-.5-.5z" fill="currentColor"></path></g></svg>
+							<span class="app_txt t-lspace">ឯកសាររបស់ខ្ញុំ<span class="d-flex align-items-center">១២</span></span>
+						</span>
+					</div>
+									
 					<div class="app_card app_04 appnews"
 					:class="{ app_active: route.path === '/pdf/profile' }">
             <router-link to="/pdf/profile"></router-link>
@@ -48,7 +63,10 @@
 							<span class="app_txt t-lspace">ព័ត៌មានផ្ទាល់ខ្លួន</span>
 						</span>
 					</div>
-          <ExpandMenu />
+         
+					
+
+			 <ExpandMenu />
 				</div>
 </template>
 <script setup>

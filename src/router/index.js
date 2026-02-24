@@ -7,6 +7,9 @@ import SidebarLayout from '../components/SidebarLayout.vue'
 
 // Views
 import Login from '../views/Login.vue'
+import ForgotPassword from '../views/ForgotPassword.vue'
+import VerifyCode from '../views/VerifyCode.vue'
+import ResetPassword from '../views/ResetPassword.vue'
 import Dashboard from '../views/Dashboard.vue'
 import Attendance from '../views/Attendance.vue'
 // shedcn
@@ -23,6 +26,7 @@ import DocumentSuccess from '../views/pdf/DocumentSuccess.vue'
 import DocumentDetail from '../views/pdf/DocumentDetail.vue'
 import History from '../views/pdf/History.vue'
 import SystemLogs from '../views/pdf/SystemLogs.vue'
+import OfficialManagement from '../views/pdf/OfficialManagement.vue'
 import Profile from '../views/pdf/Profile.vue'
 import About from '../views/pdf/About.vue'
 import AllNotification from '../views/pdf/AllNotification.vue'
@@ -40,6 +44,7 @@ import Online from '@/components/OnlineUserList.vue'
 ----------------------------------- */
 const routes = [
   //  AUTH (PUBLIC)
+
   {
     path: '/login',
     component: AuthLayout,
@@ -48,6 +53,31 @@ const routes = [
         path: '',
         name: 'login',
         component: Login
+      },
+      {
+        path: '/forgot-password',
+        name: 'forgot-password',
+        component: ForgotPassword
+      },
+      {
+        path: 'official-management',
+        name: 'pdf-official-management',
+        component: () => import('../views/pdf/OfficialManagement.vue')
+      },
+      {
+        path: '/forgot-password',
+        name: 'forgot-password',
+        component: ForgotPassword
+      },
+      {
+        path: '/verify-code',
+        name: 'verify-code',
+        component: VerifyCode
+      },
+      {
+        path: '/reset-password',
+        name: 'reset-password',
+        component: ResetPassword
       }
     ]
   },
@@ -181,6 +211,21 @@ const routes = [
         name: 'pdf-online',
         component: Online
       },
+      {
+        path: 'official-management',
+        name: 'pdf-official-management',
+        component: OfficialManagement
+      },
+      {
+        path: 'officer-edit',
+        name: 'pdf-officer-edit',
+        component: () => import('../views/pdf/OfficerEdit.vue')
+      },
+      {
+        path: 'officer-card',
+        name: 'pdf-officer-card',
+        component: () => import('../views/pdf/OfficerCardPage.vue')
+      }
     ]
   },
 
