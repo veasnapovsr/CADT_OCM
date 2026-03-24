@@ -1,91 +1,163 @@
-
-
 <template>
   <div class="login login-action-login">
     <div id="login">
       <h1 role="presentation" class="wp-login-logo">
-        <img src="../assets/logo_main.svg" />
+        <img src="../assets/logo_main.svg" alt="OCM Logo" />
       </h1>
+
       <h2 class="t-lspace bold">
         កម្មវិធីបរិវត្តកម្មឌីជីថលទីស្តីការគណៈរដ្ឋមន្ត្រី
       </h2>
 
-      <!-- Step 1: Request Reset Code -->
-      <form v-if="step === 1" @submit.prevent="handleRequestReset" class="step1">
+      <form v-if="step === 1" class="step1" @submit.prevent="requestReset">
         <div class="input-wrapper mb-15">
           <input
-            id="user_identifier"
+            id="email"
+            v-model.trim="email"
             class="input form-control"
-            v-model="identifier"
-            type="text"
-            autocomplete="off"
-            placeholder="អ៊ីមែល ឬ លេខទូរស័ព្ទ"
+            type="email"
+            autocomplete="email"
+            placeholder="អ៊ីមែល"
             required
+            :disabled="loading"
           />
           <div class="prefix">
-            <!-- mail/phone icon -->
-            <!-- ...icon SVG... -->
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                d="M4 6H20C21.1046 6 22 6.89543 22 8V16C22 17.1046 21.1046 18 20 18H4C2.89543 18 2 17.1046 2 16V8C2 6.89543 2.89543 6 4 6Z"
+                stroke="currentColor"
+                stroke-width="1.7"
+              />
+              <path
+                d="M22 8L13.03 13.7C12.3928 14.1048 11.6072 14.1048 10.97 13.7L2 8"
+                stroke="currentColor"
+                stroke-width="1.7"
+              />
+            </svg>
           </div>
         </div>
-        <button type="submit" class="button button-primary button-large w-full mt-2">
-          ស្នើសុំលេខកូដ
+
+        <button
+          type="submit"
+          class="button button-primary button-large w-full mt-2"
+          :disabled="loading"
+        >
+          {{ loading ? "កំពុងផ្ញើ..." : "ស្នើសុំលេខកូដ" }}
         </button>
       </form>
 
-      <!-- Step 2: Enter Code -->
-      <div v-if="step === 2" class="step2 fixed inset-0 z-50 flex items-center justify-center" style="background: rgba(0,0,0,0.2);">
-        <div class="bg-white rounded-lg shadow-lg p-8 relative w-full max-w-xs flex flex-col items-center">
-          <button @click="resetFlow" class="absolute top-2 right-2 text-gray-400 hover:text-red-500 text-xl font-bold">×</button>
-          <div class="mb-4 text-center font-semibold">បញ្ចូលលេខកូដ ៦ ខ្ទង់</div>
+      <div
+        v-if="step === 2"
+        class="step2 fixed inset-0 z-50 flex items-center justify-center otp-overlay"
+      >
+        <div class="otp-card">
+          <button
+            type="button"
+            class="otp-close"
+            @click="resetFlow"
+            :disabled="loading"
+            aria-label="Close"
+          >
+            ×
+          </button>
+
+          <div class="otp-title">បញ្ចូលលេខកូដ ៦ ខ្ទង់</div>
+          <div class="otp-subtitle">
+            សូមពិនិត្យអ៊ីមែលរបស់អ្នក ហើយបញ្ចូលលេខកូដដែលបានផ្ញើ។
+          </div>
+
           <input
             id="otp"
-            class="input form-control text-lg mb-4"
-            v-model="otp"
+            v-model.trim="otp"
+            class="input form-control text-lg mb-4 otp-input"
             type="text"
             maxlength="6"
-            pattern="[0-9A-Z]{6}"
+            inputmode="text"
             autocomplete="one-time-code"
-            placeholder="xxxxxx"
-            required
-            style="text-align: center;"
+            placeholder="XXXXXX"
+            :disabled="loading"
+            @input="normalizeOtp"
           />
-          <button class="button button-primary" @click="handleVerifyOtp">ផ្ញើលេខកូដ</button>
-          <div v-if="otpMessage" class="mt-2 text-center text-red-600">{{ otpMessage }}</div>
+
+          <button
+            type="button"
+            class="button button-primary w-full"
+            @click="verifyOtp"
+            :disabled="loading"
+          >
+            {{ loading ? "កំពុងផ្ទៀងផ្ទាត់..." : "ផ្ទៀងផ្ទាត់លេខកូដ" }}
+          </button>
+
+          <button
+            type="button"
+            class="button button-secondary w-full mt-2"
+            @click="requestReset"
+            :disabled="loading"
+          >
+            ផ្ញើលេខកូដម្តងទៀត
+          </button>
+
+          <div v-if="otpMessage" class="mt-3 text-center text-red-600">
+            {{ otpMessage }}
+          </div>
         </div>
       </div>
 
-      <!-- Step 3: Set New Password -->
-      <form v-if="step === 3" @submit.prevent="handleResetPassword">
+      <form v-if="step === 3" @submit.prevent="resetPassword">
         <div class="input-wrapper mb-15">
           <input
             id="new_password"
-            class="input form-control"
             v-model="newPassword"
+            class="input form-control"
             type="password"
             autocomplete="new-password"
             placeholder="ពាក្យសម្ងាត់ថ្មី"
             required
+            :disabled="loading"
           />
         </div>
+
         <div class="input-wrapper mb-15">
           <input
             id="confirm_password"
-            class="input form-control"
             v-model="confirmPassword"
+            class="input form-control"
             type="password"
             autocomplete="new-password"
             placeholder="បញ្ជាក់ពាក្យសម្ងាត់ថ្មី"
             required
+            :disabled="loading"
           />
         </div>
-        <button type="submit" class="button button-primary button-large w-full mt-2">
-          ផ្លាស់ប្ដូរពាក្យសម្ងាត់
+
+        <button
+          type="submit"
+          class="button button-primary button-large w-full mt-2"
+          :disabled="loading"
+        >
+          {{ loading ? "កំពុងផ្លាស់ប្ដូរ..." : "ផ្លាស់ប្ដូរពាក្យសម្ងាត់" }}
         </button>
       </form>
 
-      <div v-if="message" class="mt-4 text-green-600 text-center">{{ message }}</div>
+      <div v-if="errorMessage" class="mt-4 text-center text-red-600">
+        {{ errorMessage }}
+      </div>
+
+      <div v-if="successMessage" class="mt-4 text-center text-green-600">
+        {{ successMessage }}
+      </div>
+
       <div class="mt-4 text-right hover:underline">
-        <router-link to="/login" class="text-blue-500 hover:underline">ត្រឡប់ទៅទំព័រចូល</router-link>
+        <router-link to="/login" class="text-blue-500 hover:underline">
+          ត្រឡប់ទៅទំព័រចូល
+        </router-link>
       </div>
     </div>
   </div>
@@ -101,138 +173,251 @@ import { ref } from "vue"
 export default {
   name: "ForgotPassword",
   setup() {
-    const VITE_API_SERVER = import.meta.env.VITE_API_SERVER
-    const identifier = ref("")
-    const message = ref("")
+    const apiServer = import.meta.env.VITE_API_SERVER.replace(/\/$/, "")
+    const passwordBaseUrl = `${apiServer}/password`
+
     const step = ref(1)
+    const loading = ref(false)
+
+    const email = ref("")
     const otp = ref("")
-    const otpMessage = ref("")
     const newPassword = ref("")
     const confirmPassword = ref("")
 
-    // const handleRequestReset = async () => {
-    //   message.value = ""
-    //   otpMessage.value = ""
-    //   try {
-    //     const res = await fetch(`${import.meta.env.VITE_API_SERVER}/authentication/forgot`, {
-    //       method: "POST",
-    //       headers: { "Content-Type": "application/json" },
-    //       body: JSON.stringify({ email: identifier.value })
-    //     })
-    //     const data = await res.json()
-    //     if (data.ok) {
-    //       step.value = 2
-    //       message.value = data.message || "សូមបញ្ចូលលេខកូដដែលបានផ្ញើទៅអ៊ីមែលរបស់អ្នក។"
-    //     } else {
-    //       message.value = data.message || "Email មិនត្រឹមត្រូវ។"
-    //     }
-    //   } catch (e) {
-    //     message.value = "បញ្ហាការភ្ជាប់បណ្តាញ។"
-    //   }
-    // }
+    const successMessage = ref("")
+    const errorMessage = ref("")
+    const otpMessage = ref("")
 
-const handleRequestReset = async () => {
-  message.value = ""
-  otpMessage.value = ""
-  try {
-    const res = await fetch(`${import.meta.env.VITE_API_SERVER}/authentication/forgot`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: identifier.value })
-    })
-    // If response is 204, there may be no body, so handle gracefully
-    let data = {}
-    try {
-      data = await res.json()
-      console.log("Response data:", data)
-    } catch (e) {
-      // If no JSON, fallback
+    const isValidEmail = (value) => {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
     }
-    if (res.status === 200 || data.ok) {
-      step.value = 2
-      message.value = data.message || "សូមបញ្ចូលលេខកូដដែលបានផ្ញើទៅអ៊ីមែលរបស់អ្នក។"
-    } else {
-      message.value = data.message || "Email មិនត្រឹមត្រូវ។"
-    }
-  } catch (e) {
-    message.value = "បញ្ហាការភ្ជាប់បណ្តាញ។"
-  }
-}
 
-    const handleVerifyOtp = async () => {
+    const clearMessages = () => {
+      successMessage.value = ""
+      errorMessage.value = ""
       otpMessage.value = ""
-      if (otp.value.length !== 6 || !/^[0-9A-Z]{6}$/.test(otp.value)) {
-        otpMessage.value = "លេខកូដមិនត្រឹមត្រូវទេ។"
+    }
+
+    const sensitiveServerErrorPattern =
+      /(fopen\(|failed to open stream|no such file or directory|stack trace|exception|sqlstate|syntax error|undefined property|call to undefined|c:\\|\/var\/|\/home\/)/i
+
+    const getSafeErrorMessage = (data, response, fallback) => {
+      const message = typeof data?.message === "string" ? data.message.trim() : ""
+
+      if (!message || response.status >= 500 || sensitiveServerErrorPattern.test(message)) {
+        return fallback
+      }
+
+      return message
+    }
+
+    const withHandledPromise = (action, setMessage) => {
+      return () => {
+        void action().catch(() => {
+          loading.value = false
+          clearMessages()
+          setMessage("ប្រព័ន្ធមានបញ្ហាបណ្តោះអាសន្ន សូមព្យាយាមម្តងទៀត។")
+        })
+      }
+    }
+
+    const normalizeOtp = () => {
+      otp.value = otp.value.toUpperCase().replace(/[^0-9A-Z]/g, "").slice(0, 6)
+    }
+
+    const parseResponse = async (response) => {
+      try {
+        return await response.json()
+      } catch {
+        return {}
+      }
+    }
+
+    const isSuccessfulResponse = (response, data) => {
+      return response.ok && (typeof data?.ok === "undefined" || data.ok)
+    }
+
+    const handleRequestReset = async () => {
+      clearMessages()
+
+      if (!email.value) {
+        errorMessage.value = "សូមបញ្ចូលអ៊ីមែលរបស់អ្នក។"
         return
       }
+
+      if (!isValidEmail(email.value)) {
+        errorMessage.value = "សូមបញ្ចូលអ៊ីមែលឱ្យត្រឹមត្រូវ។"
+        return
+      }
+
+      loading.value = true
+
       try {
-        const res = await fetch(`${VITE_API_SERVER}/forgot/confirm`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: identifier.value, code: otp.value })
+        const response = await fetch(`${passwordBaseUrl}/forgot`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+          },
+          body: JSON.stringify({
+            email: email.value.trim()
+          })
         })
-        const data = await res.json()
-        if (data.ok) {
-          otpMessage.value = ""
-          step.value = 3
-          message.value = "កូដត្រឹមត្រូវ សូមបញ្ចូលពាក្យសម្ងាត់ថ្មី។"
-        } else {
-          otpMessage.value = data.message || "កូដមិនត្រឹមត្រូវ។"
+
+        const data = await parseResponse(response)
+
+        if (isSuccessfulResponse(response, data)) {
+          step.value = 2
+          successMessage.value =
+            data.message || "សូមបញ្ចូលលេខកូដដែលបានផ្ញើទៅអ៊ីមែលរបស់អ្នក។"
+          return
         }
-      } catch (e) {
+
+        errorMessage.value = getSafeErrorMessage(
+          data,
+          response,
+          "មិនអាចស្នើសុំលេខកូដបានទេ។"
+        )
+      } catch {
+        errorMessage.value = "បញ្ហាការភ្ជាប់បណ្តាញ។"
+      } finally {
+        loading.value = false
+      }
+    }
+
+    const handleVerifyOtp = async () => {
+      clearMessages()
+      normalizeOtp()
+
+      if (!email.value || !isValidEmail(email.value)) {
+        otpMessage.value = "សូមបញ្ចូលអ៊ីមែលឱ្យត្រឹមត្រូវជាមុនសិន។"
+        return
+      }
+
+      if (!/^[0-9A-Z]{6}$/.test(otp.value)) {
+        otpMessage.value = "លេខកូដត្រូវតែមាន ៦ ខ្ទង់។"
+        return
+      }
+
+      loading.value = true
+
+      try {
+        const response = await fetch(`${passwordBaseUrl}/forgot/confirm`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+          },
+          body: JSON.stringify({
+            email: email.value.trim(),
+            code: otp.value
+          })
+        })
+
+        const data = await parseResponse(response)
+
+        if (isSuccessfulResponse(response, data)) {
+          step.value = 3
+          successMessage.value = data.message || "កូដត្រឹមត្រូវ សូមបញ្ចូលពាក្យសម្ងាត់ថ្មី។"
+          return
+        }
+
+        otpMessage.value = getSafeErrorMessage(data, response, "កូដមិនត្រឹមត្រូវ។")
+      } catch {
         otpMessage.value = "បញ្ហាការភ្ជាប់បណ្តាញ។"
+      } finally {
+        loading.value = false
       }
     }
 
     const handleResetPassword = async () => {
-      message.value = ""
-      if (!newPassword.value || newPassword.value !== confirmPassword.value) {
-        message.value = "ពាក្យសម្ងាត់មិនត្រូវគ្នា។"
+      clearMessages()
+
+      if (!newPassword.value || !confirmPassword.value) {
+        errorMessage.value = "សូមបញ្ចូលពាក្យសម្ងាត់ថ្មីទាំងពីរប្រអប់។"
         return
       }
+
+      if (newPassword.value !== confirmPassword.value) {
+        errorMessage.value = "ពាក្យសម្ងាត់មិនត្រូវគ្នា។"
+        return
+      }
+
+      loading.value = true
+
       try {
-        const res = await fetch(`${VITE_API_SERVER}/reset`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: identifier.value, password: newPassword.value })
+        const response = await fetch(`${passwordBaseUrl}/reset`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+          },
+          body: JSON.stringify({
+            email: email.value.trim(),
+            password: newPassword.value,
+            code: otp.value
+          })
         })
-        const data = await res.json()
-        if (data.ok) {
-          message.value = "ផ្លាស់ប្ដូរពាក្យសម្ងាត់ថ្មីបានជោគជ័យ!"
+
+        const data = await parseResponse(response)
+
+        if (isSuccessfulResponse(response, data)) {
+          successMessage.value = data.message || "ផ្លាស់ប្ដូរពាក្យសម្ងាត់ថ្មីបានជោគជ័យ!"
           step.value = 1
-          identifier.value = ""
           otp.value = ""
           newPassword.value = ""
           confirmPassword.value = ""
-        } else {
-          message.value = data.message || "បរាជ័យក្នុងការផ្លាស់ប្ដូរពាក្យសម្ងាត់។"
+          email.value = ""
+          return
         }
-      } catch (e) {
-        message.value = "បញ្ហាការភ្ជាប់បណ្តាញ។"
+
+        errorMessage.value = getSafeErrorMessage(
+          data,
+          response,
+          "បរាជ័យក្នុងការផ្លាស់ប្ដូរពាក្យសម្ងាត់។"
+        )
+      } catch {
+        errorMessage.value = "បញ្ហាការភ្ជាប់បណ្តាញ។"
+      } finally {
+        loading.value = false
       }
     }
 
     const resetFlow = () => {
       step.value = 1
-      identifier.value = ""
+      email.value = ""
       otp.value = ""
       newPassword.value = ""
       confirmPassword.value = ""
-      message.value = ""
-      otpMessage.value = ""
+      clearMessages()
     }
 
+    const requestReset = withHandledPromise(handleRequestReset, (message) => {
+      errorMessage.value = message
+    })
+
+    const verifyOtp = withHandledPromise(handleVerifyOtp, (message) => {
+      otpMessage.value = message
+    })
+
+    const resetPassword = withHandledPromise(handleResetPassword, (message) => {
+      errorMessage.value = message
+    })
+
     return {
-      identifier,
-      message,
       step,
+      loading,
+      email,
       otp,
-      otpMessage,
       newPassword,
       confirmPassword,
-      handleRequestReset,
-      handleVerifyOtp,
-      handleResetPassword,
+      successMessage,
+      errorMessage,
+      otpMessage,
+      normalizeOtp,
+      requestReset,
+      verifyOtp,
+      resetPassword,
       resetFlow
     }
   }
@@ -241,6 +426,67 @@ const handleRequestReset = async () => {
 
 <style scoped>
 #otp::placeholder {
-  padding-right: 14px;
+  padding-right: 0;
+  letter-spacing: 0.3em;
+}
+
+.otp-overlay {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.otp-card {
+  position: relative;
+  width: 100%;
+  max-width: 22rem;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  background: #ffffff;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.otp-close {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.7rem;
+  border: 0;
+  background: transparent;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: #9ca3af;
+  cursor: pointer;
+}
+
+.otp-close:hover {
+  color: #dc2626;
+}
+
+.otp-title {
+  margin-bottom: 0.4rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.otp-subtitle {
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #4b5563;
+}
+
+.otp-input {
+  text-align: center;
+  letter-spacing: 0.35em;
+}
+
+.button-secondary {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.button-secondary:hover {
+  background: #e5e7eb;
 }
 </style>

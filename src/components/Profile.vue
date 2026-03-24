@@ -1,8 +1,8 @@
 <template>
 	<div class="ocm_pover_wr">
 	  <div class="ocm_profile ocm_pover" @click="togglePopover">
-		<span class="avtar"><img :src="user.avatar_url" /></span>
-		<span>{{ user.countesy.name }}<br><b class="moul fs-90">{{ user.lastname }} {{ user.firstname }}</b></span>
+    <span class="avtar"><img :src="displayAvatar" /></span>
+    <span>{{ displayUser.countesy.name }}<br><b class="moul fs-90">{{ displayName }}</b></span>
 	  </div>
 	  <div class="pop_content">
 		<ul class="pinfo_list">
@@ -31,15 +31,45 @@
   </template>
   
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
-const user = ref({
+import { computed, ref, onMounted, onUnmounted } from 'vue';
+import { authLogout, getUser } from '@/plugins/authentication';
+
+const emptyUser = {
   avatar_url: '',
   firstname: '',
   lastname: '',
   countesy: { name: '' }
-});
+}
+
+const user = ref(null);
 
 const isPopoverActive = ref(false);
+
+const displayUser = computed(() => {
+  return user.value && typeof user.value === 'object'
+    ? {
+        ...emptyUser,
+        ...user.value,
+        countesy: {
+          ...emptyUser.countesy,
+          ...(user.value.countesy || {}),
+        },
+      }
+    : emptyUser
+})
+
+const displayName = computed(() => {
+  const fullName = [displayUser.value.lastname, displayUser.value.firstname].filter(Boolean).join(' ').trim()
+  return fullName || 'គណនីមិនទាន់បានចូលប្រព័ន្ធ'
+})
+
+const displayAvatar = computed(() => {
+  if (displayUser.value.avatar_url) {
+    return displayUser.value.avatar_url
+  }
+
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName.value)}`
+})
 
 // Function to toggle only the clicked popover
 const togglePopover = (event) => {
@@ -75,10 +105,7 @@ const handleClickOutside = (event) => {
 // Listen for clicks outside
 onMounted(() => {
   document.addEventListener('click', handleClickOutside);
-  const storedUser = localStorage.getItem('user');
-  if (storedUser) {
-    user.value = JSON.parse(storedUser);
-  }
+  user.value = getUser()
 });
 
 onUnmounted(() => {
@@ -86,9 +113,8 @@ onUnmounted(() => {
 });
 
 const logout = () => {
-      localStorage.removeItem('upload_max_filesize'); // Remove token from localStorage
-      localStorage.removeItem('token'); // Remove token from localStorage
-      localStorage.removeItem('user'); // Remove token from localStorage
-      window.location.href = '/'; // Redirect to login page
+  localStorage.removeItem('upload_max_filesize');
+  authLogout()
+  window.location.href = '/';
 };
 </script>

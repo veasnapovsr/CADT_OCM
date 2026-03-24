@@ -1,55 +1,191 @@
 <template>
-  <n-modal v-if="show" :show="show" @close="onClose" class="bg-white p-8">
-    <div class="card relative border border-gray-300 rounded mx-auto w-96 bg-center bg-cover bg-no-repeat" :style="`background-image: url('${ocmLogoUrl}'); background-size: 70% 70%;`">
-      <div class="absolute left-0 top-0 right-0 bottom-0 bg-white bg-opacity-90"></div>
-      <div v-if="officer" class="flex relative">
-        <div class="mx-auto p-4 w-full flex flex-wrap">
-          <div class="w-full mb-2">
-            <div class="w-12 h-12 mx-auto bg-center bg-no-repeat bg-white bg-contain border-gray-200" :style="`background-image: url('${ocmLogoUrl}')`"></div>
-            <div class="w-full font-moul text-xs text-center text-yellow-500 my-2">ទីស្ដីការគណៈរដ្ឋមន្ត្រី</div>
-            <div class="w-full text-xs text-center text-yellow-500">Office of the Council of Ministers</div>
-          </div>
-          <div class="w-full">
-            <img :src="officer.image ? officer.image : ocmLogoUrl" class="w-24 mx-auto rounded-md border border-gray-100 p-1 bg-white" />
-          </div>
-          <div class="w-full h-6 text-center mx-auto my-2 font-bold">OCM-ORG-{{ officer.id }}</div>
-          <div class="font-moul text-left">
-            <table>
-              <tbody>
-                <tr>
-                  <td class="w-24 p-1 font-moul leading-6" style="vertical-align: top; text-align: left;">ឈ្មោះ</td>
-                  <td class="font-moul p-1 text-xl leading-6" style="vertical-align: top; text-align: left;">{{ officer.name }}</td>
-                </tr>
-                <tr>
-                  <td class="w-24 p-1 font-moul leading-6" style="vertical-align: top; text-align: left;">តួនាទី</td>
-                  <td class="font-moul p-1 leading-6" style="vertical-align: top; text-align: left;">{{ officer.position }}</td>
-                </tr>
-                <tr>
-                  <td class="w-24 p-1 font-moul leading-6" style="vertical-align: top; text-align: left;">អង្គភាព</td>
-                  <td class="font-moul p-1 leading-6" style="vertical-align: top; text-align: left;">{{ officer.organization }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="w-full my-2">
-            <QrcodeVue :value="'OCM-ORG-' + officer.id" :size="100" level="H" class="mx-auto p-2 border border-gray-200 rounded" render-as="svg" />
-          </div>
+  <div class="official-card" :style="{ '--official-card-watermark': `url(${ocmLogoUrl})` }">
+    <div class="official-card__overlay"></div>
+    <div v-if="officer" class="official-card__content">
+      <div class="official-card__brand">
+        <img :src="ocmLogoUrl" alt="OCM logo" class="official-card__logo" />
+        <div class="official-card__brand-kh">ទីស្ដីការគណៈរដ្ឋមន្ត្រី</div>
+        <div class="official-card__brand-en">Office of the Council of Ministers</div>
+      </div>
+
+      <div class="official-card__photo-frame">
+        <img :src="cardImageSrc" alt="Officer" class="official-card__photo" />
+      </div>
+
+      <div class="official-card__code">OCM-ORG-{{ officer.id }}</div>
+
+      <div class="official-card__meta">
+        <div class="official-card__row">
+          <span>ឈ្មោះ</span>
+          <strong>{{ officer.name }}</strong>
+        </div>
+        <div class="official-card__row">
+          <span>តួនាទី</span>
+          <strong>{{ officer.position }}</strong>
+        </div>
+        <div class="official-card__row">
+          <span>អង្គភាព</span>
+          <strong>{{ officer.organization }}</strong>
         </div>
       </div>
-      <Frame4Corner />
-      <button @click="onClose" class="absolute top-2 right-2 text-gray-500 hover:text-red-500">✕</button>
+
+      <div class="official-card__qr-wrap">
+        <QrcodeVue :value="`OCM-ORG-${officer.id}`" :size="92" level="H" render-as="svg" class="official-card__qr" />
+      </div>
     </div>
-  </n-modal>
+    <Frame4Corner />
+  </div>
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import QrcodeVue from 'qrcode.vue'
-import ocmLogoUrl from '@/assets/logo.svg?url'
 import Frame4Corner from '@/widgets/frame/corner4.vue'
 
-defineProps({
-  show: Boolean,
+const props = defineProps({
   officer: Object,
-  onClose: Function
+  ocmLogoUrl: String,
+  savedOfficialCardBase64: String,
+  getDate: Function,
+})
+
+const cardImageSrc = computed(() => {
+  const source = props.savedOfficialCardBase64 || props.officer?.image || props.ocmLogoUrl
+
+  if (!source || typeof source !== 'string') {
+    return props.ocmLogoUrl
+  }
+
+  if (
+    source.startsWith('data:') ||
+    source.startsWith('http') ||
+    source.startsWith('blob:') ||
+    source.startsWith('/')
+  ) {
+    return source
+  }
+
+  return `data:image/jpeg;base64,${source}`
 })
 </script>
+
+<style scoped>
+.official-card {
+  position: relative;
+  width: 21.5rem;
+  min-height: 28rem;
+  border: 1px solid #d7dee7;
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.12);
+  overflow: hidden;
+}
+
+.official-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--official-card-watermark);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 68% 68%;
+  opacity: 0.05;
+}
+
+.official-card__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.94));
+}
+
+.official-card__content {
+  position: relative;
+  z-index: 1;
+  padding: 1.2rem 1.35rem 1.35rem;
+}
+
+.official-card__brand {
+  text-align: center;
+}
+
+.official-card__logo {
+  width: 2.1rem;
+  height: 2.1rem;
+  object-fit: contain;
+  margin: 0 auto 0.35rem;
+}
+
+.official-card__brand-kh {
+  color: #d2a62d;
+  font-size: 0.62rem;
+  line-height: 1.4;
+}
+
+.official-card__brand-en {
+  color: #d2a62d;
+  font-size: 0.5rem;
+  line-height: 1.3;
+}
+
+.official-card__photo-frame {
+  width: 8.2rem;
+  height: 10rem;
+  margin: 0.8rem auto 0.5rem;
+  padding: 0.3rem;
+  border-radius: 0.7rem;
+  border: 1px solid #d7dee7;
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.08);
+}
+
+.official-card__photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+
+.official-card__code {
+  margin-bottom: 0.65rem;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #111827;
+}
+
+.official-card__meta {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.official-card__row {
+  display: grid;
+  grid-template-columns: 4.15rem minmax(0, 1fr);
+  gap: 0.45rem;
+  align-items: start;
+  font-size: 0.76rem;
+  color: #374151;
+}
+
+.official-card__row span {
+  color: #4b5563;
+}
+
+.official-card__row strong {
+  font-weight: 600;
+  color: #111827;
+}
+
+.official-card__qr-wrap {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 0.9rem;
+}
+
+.official-card__qr {
+  padding: 0.32rem;
+  border: 1px solid #d7dee7;
+  border-radius: 0.45rem;
+  background: #fff;
+}
+</style>

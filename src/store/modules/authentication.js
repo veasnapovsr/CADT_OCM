@@ -27,8 +27,26 @@ const actions = {
    * Login
    */
    async login({state, commit, rootState }, params ){
-    // console.log( import.meta.env.VITE_API_SERVER )
-    return await auth.login(import.meta.env.VITE_API_SERVER+"/authentication/login", params) 
+    const authCenterApiServer = import.meta.env.VITE_API_SERVER.replace(/\/$/, "")
+    const clientApiServer = (
+      import.meta.env.VITE_CLIENT_API_SERVER || authCenterApiServer.replace(/\/authcenter$/, "/client")
+    ).replace(/\/$/, "")
+
+    try {
+      return await auth.login(authCenterApiServer + "/authentication/login", params)
+    } catch (error) {
+      const apiMessage = error.response?.data?.message || error.response?.data?.error || null
+
+      if (
+        error.response?.status === 403 &&
+        apiMessage === "គណនីនេះមិនមានសិទ្ធិគ្រប់គ្រាន់។" &&
+        clientApiServer !== authCenterApiServer
+      ) {
+        return await auth.login(clientApiServer + "/authentication/login", params)
+      }
+
+      throw error
+    }
    },
   
   /**

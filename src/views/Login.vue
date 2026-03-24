@@ -82,9 +82,15 @@ import { useRouter } from "vue-router"
 import { toast } from "vue-sonner"
 import auth from './../api/auth'
 import Crud from './../classes/Crud'
+import { authLogout, setToken, setUser, getAccessToken, getUser } from './../plugins/authentication'
 
 export default {
   setup() {
+    const authCenterApiServer = import.meta.env.VITE_API_SERVER.replace(/\/$/, "")
+    const clientApiServer = (
+      import.meta.env.VITE_CLIENT_API_SERVER || authCenterApiServer.replace(/\/authcenter$/, "/client")
+    ).replace(/\/$/, "")
+    const insufficientPermissionMessage = "គណនីនេះមិនមានសិទ្ធិគ្រប់គ្រាន់។"
 
 
     // // បង្កើតឧបករណ៍ CRUD
@@ -114,13 +120,63 @@ export default {
     const showPassword = ref(false)
     const router = useRouter()
 
+    const redirectAfterLogin = (record) => {
+      const userId = record?.id ? String(record.id) : ""
+
+      if (userId === "2901") {
+        router.push("/pdf/flow-dash2")
+      } else {
+        router.push("/dashboard")
+      }
+    }
+
+    const persistLoginState = (response) => {
+      const { token, record, upload_max_filesize } = response.data || {}
+
+      if (!token?.access_token) {
+        throw new Error("ម៉ាស៊ីនមេមិនបានផ្ដល់ access token ទេ។")
+      }
+
+      setToken(token)
+      setUser(record || null)
+      localStorage.setItem("upload_max_filesize", upload_max_filesize)
+
+      return record
+    }
+
+    const extractApiErrorMessage = (error) => {
+      const responseData = error?.response?.data
+      const validationErrors = responseData?.errors
+
+      if (validationErrors && typeof validationErrors === "object") {
+        const firstValidationMessage = Object.values(validationErrors)
+          .flat()
+          .find(Boolean)
+
+        if (firstValidationMessage) {
+          return firstValidationMessage
+        }
+      }
+
+      return responseData?.message || responseData?.error || null
+    }
+
+    const requestLogin = async (baseUrl) => {
+      const identifier = email.value.trim()
+
+      return await auth.login(`${baseUrl}/authentication/login`, {
+        username: identifier,
+        email: identifier,
+        password: password.value
+      })
+    }
+
     // Redirect if already logged in
     onMounted(() => {
-      const token = localStorage.getItem("token")
+      const token = getAccessToken()
       if (token) {
         try {
-          const userRaw = localStorage.getItem("user")
-          const user = userRaw ? JSON.parse(userRaw) : null
+          const user = getUser()
           const userId = user?.id ? String(user.id) : ""
 
           if (userId === "2901") {
@@ -143,65 +199,61 @@ export default {
       }
 
       try {
-
-        /**
-         * Start
-         */
-        auth.login( 
-          `${import.meta.env.VITE_API_SERVER}/authentication/login`,
-          {
-            email: email.value,
-            password: password.value
-          }
-        ).then( res => {
-          
-          const { token, record, upload_max_filesize } = res.data
-
-          localStorage.setItem("token", JSON.stringify(token))
-          localStorage.setItem("user", JSON.stringify(record))
-          localStorage.setItem("upload_max_filesize", upload_max_filesize)
-          toast.success("ចូលប្រព័ន្ធបានជោគជ័យ")
-          
-          const userId = record?.id ? String(record.id) : ""
-
-          if (userId === "2901") {
-            router.push("/pdf/flow-dash2")
-          } else {
-            router.push("/dashboard")
-          }
-        })
-
-        // const response = await axios.post(
-        //   "https://hrapi.ocm.gov.kh/api/authcenter/authentication/login",
-        //   {
-        //     email: email.value,
-        //     password: password.value
-        //   }
-        // )
-
-        
-
-        /**
-         * End
-         */
-
+        authLogout()
+        const res = await requestLogin(authCenterApiServer)
+        const record = persistLoginState(res)
+        toast.success("ចូលប្រព័ន្ធបានជោគជ័យ")
+        redirectAfterLogin(record)
       } catch (err) {
-        const apiMessage =
-          err.response?.data?.message ||
-          err.response?.data?.error ||
-          null
+        const apiMessage = extractApiErrorMessage(err)
+
+        const shouldRetryWithClient =
+          err.response?.status === 403 &&
+          apiMessage === insufficientPermissionMessage &&
+          clientApiServer !== authCenterApiServer
+
+        if (shouldRetryWithClient) {
+          try {
+            authLogout()
+            const clientResponse = await requestLogin(clientApiServer)
+            const record = persistLoginState(clientResponse)
+            toast.success("ចូលប្រព័ន្ធបានជោគជ័យ")
+            redirectAfterLogin(record)
+            return
+          } catch (clientError) {
+            const clientApiMessage = extractApiErrorMessage(clientError)
+
+            toast.error("មិនអាចចូលប្រព័ន្ធបាន", {
+              description: clientApiMessage || apiMessage || insufficientPermissionMessage
+            })
+            return
+          }
+        }
 
         if (err.response?.status === 401) {
+          authLogout()
           toast.error("ចូលប្រព័ន្ធបរាជ័យ", {
             description: apiMessage || "Unauthorized"
           })
+        } else if (err.response?.status === 403) {
+          authLogout()
+          toast.error("មិនអាចចូលប្រព័ន្ធបាន", {
+            description: apiMessage || insufficientPermissionMessage
+          })
+        } else if (err.response?.status === 422) {
+          authLogout()
+          toast.error("ព័ត៌មានចូលប្រព័ន្ធមិនត្រឹមត្រូវ", {
+            description: apiMessage || "សូមពិនិត្យឈ្មោះអ្នកប្រើ និងពាក្យសម្ងាត់ម្ដងទៀត"
+          })
         } else if (apiMessage) {
+          authLogout()
           toast.error("បញ្ហាប្រព័ន្ធ", {
             description: apiMessage
           })
         } else {
+          authLogout()
           toast.error("បញ្ហាប្រព័ន្ធ", {
-            description: "សូមព្យាយាមម្ដងទៀតនៅពេលក្រោយ"
+            description: err.message || "សូមព្យាយាមម្ដងទៀតនៅពេលក្រោយ"
           })
         }
       }
